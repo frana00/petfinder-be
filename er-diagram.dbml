@@ -1,0 +1,63 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table alerts {
+  id integer [primary key]
+  user_id integer [not null]
+  type enum
+  status enum
+  created_at timestamp
+  date timestamp
+  description text
+  cp varchar [note: "zip code where last seen"]
+}
+
+Table photos {
+  id integer [primary key]
+  alert_id integer [not null]
+  url varchar [unique]
+}
+
+Table users {
+  id integer [primary key]
+  username varchar
+  role varchar
+  created_at timestamp
+}
+
+Table subscriptions {
+  id integer [primary key]
+  user_id integer [not null]
+  cp varchar 
+  alert_type enum
+}
+
+Table notifications {
+  id integer [primary key]
+  user_id integer [not null]
+  alert_id integer [not null]
+  created_at timestamp
+  type enum
+}
+
+Table email_notifications {
+  notification_id integer [primary key]
+  status enum
+  to varchar
+  subject varchar
+  body varchar
+}
+
+Table sms_notifications {
+  notification_id integer [primary key]
+  status enum
+  phone_number varchar
+  text varchar
+}
+
+Ref user_alerts: alerts.user_id > users.id // many-to-one
+Ref alert_photos: photos.alert_id > alerts.id // many-to-one
+Ref user_subscriptions: subscriptions.user_id > users.id
+Ref user_notifications: notifications.user_id > users.id
+Ref email_notifications: email_notifications.notification_id - notifications.id
+Ref sms_notifications: sms_notifications.notification_id - notifications.id
