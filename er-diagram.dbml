@@ -4,20 +4,20 @@
 Table alerts {
   id integer [primary key]
   user_id integer [not null]
-  type enum('LOST', 'FOUND')
-  status enum('ACTIVE', 'RESOLVED')
+  type enum('LOST', 'FOUND') [not null]
+  status enum('ACTIVE', 'RESOLVED') [not null]
   sex enum('MALE', 'FEMALE', 'UNKNOWN')
   created_at timestamp
   date timestamp [not null]
   description text
-  breed text
-  cp varchar [note: "zip code where last seen"]
+  breed varchar(100)
+  cp varchar(10) [not null, note: "zip code where last seen"]
   country_id integer [not null]
 
   indexes {
     user_id
-    date
     country_id
+    date
   }
 }
 
@@ -33,15 +33,18 @@ Table photos {
 
 Table users {
   id integer [primary key]
-  username varchar(50)
-  role enum('ADMIN', 'USER')
+  username varchar(50) [not null]
+  email varchar(100) [not null unique]
+  subscription_email varchar(100) [not null]
+  phone_number varchar(20)
+  role enum('ADMIN', 'USER') [not null]
   created_at timestamp
 }
 
 Table subscriptions {
   id integer [primary key]
   user_id integer [not null]
-  cp varchar(10)
+  cp varchar(10) [not null]
   country_id integer [not null]
   alert_type enum('LOST', 'FOUND')
 
@@ -56,7 +59,7 @@ Table notifications {
   user_id integer [not null]
   alert_id integer [not null]
   created_at timestamp
-  type enum('EMAIL', 'SMS')
+  type enum('EMAIL', 'SMS') [not null]
 
   indexes {
     user_id
@@ -66,22 +69,22 @@ Table notifications {
 
 Table email_notifications {
   notification_id integer [primary key]
-  status enum('PENDING', 'SENT', 'FAILED')
-  to varchar(254)
-  subject varchar(100)
-  body text
+  status enum('PENDING', 'SENT', 'FAILED') [not null]
+  to varchar(255) [not null]
+  subject varchar(100) [not null]
+  body text [not null]
 }
 
 Table sms_notifications {
   notification_id integer [primary key]
-  status enum('PENDING', 'SENT', 'FAILED')
-  phone_number varchar(20)
-  text text
+  status enum('PENDING', 'SENT', 'FAILED') [not null]
+  phone_number varchar(20) [not null]
+  text text [not null]
 }
 
 Table countries {
   id integer [primary key]
-  name varchar(100) [unique]
+  name varchar(100) [unique, not null]
 }
 
 Ref user_alerts: alerts.user_id > users.id // many-to-one

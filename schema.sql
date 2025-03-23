@@ -8,6 +8,9 @@ CREATE TABLE countries (
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    subscription_email VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20),
     role ENUM('ADMIN', 'USER') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -41,6 +44,7 @@ CREATE TABLE subscriptions (
     cp VARCHAR(10) NOT NULL,
     country_id INT NOT NULL,
     alert_type ENUM('LOST', 'FOUND') NOT NULL,
+    type ENUM('EMAIL', 'SMS') NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (country_id) REFERENCES countries(id)
 );
