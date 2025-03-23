@@ -4,34 +4,51 @@
 Table alerts {
   id integer [primary key]
   user_id integer [not null]
-  type enum
-  status enum
+  type enum('LOST', 'FOUND')
+  status enum('ACTIVE', 'RESOLVED')
+  sex enum('MALE', 'FEMALE', 'UNKNOWN')
   created_at timestamp
-  date timestamp
+  date timestamp [not null]
   description text
+  breed text
   cp varchar [note: "zip code where last seen"]
   country_id integer [not null]
+
+  indexes {
+    user_id
+    date
+    country_id
+  }
 }
 
 Table photos {
   id integer [primary key]
   alert_id integer [not null]
-  url varchar [unique]
+  url varchar(255) [unique]
+
+  indexes {
+    alert_id
+  }
 }
 
 Table users {
   id integer [primary key]
-  username varchar
-  role varchar
+  username varchar(50)
+  role enum('ADMIN', 'USER')
   created_at timestamp
 }
 
 Table subscriptions {
   id integer [primary key]
   user_id integer [not null]
-  cp varchar 
+  cp varchar(10)
   country_id integer [not null]
-  alert_type enum
+  alert_type enum('LOST', 'FOUND')
+
+  indexes {
+    user_id
+    country_id
+  }
 }
 
 Table notifications {
@@ -39,27 +56,32 @@ Table notifications {
   user_id integer [not null]
   alert_id integer [not null]
   created_at timestamp
-  type enum
+  type enum('EMAIL', 'SMS')
+
+  indexes {
+    user_id
+    alert_id
+  }
 }
 
 Table email_notifications {
   notification_id integer [primary key]
-  status enum
-  to varchar
-  subject varchar
-  body varchar
+  status enum('PENDING', 'SENT', 'FAILED')
+  to varchar(254)
+  subject varchar(100)
+  body text
 }
 
 Table sms_notifications {
   notification_id integer [primary key]
-  status enum
-  phone_number varchar
-  text varchar
+  status enum('PENDING', 'SENT', 'FAILED')
+  phone_number varchar(20)
+  text text
 }
 
 Table countries {
   id integer [primary key]
-  name varchar [unique]
+  name varchar(100) [unique]
 }
 
 Ref user_alerts: alerts.user_id > users.id // many-to-one
@@ -68,6 +90,5 @@ Ref user_subscriptions: subscriptions.user_id > users.id
 Ref user_notifications: notifications.user_id > users.id
 Ref email_notifications: email_notifications.notification_id - notifications.id
 Ref sms_notifications: sms_notifications.notification_id - notifications.id
-
 Ref alert_countries: alerts.country_id > countries.id
 Ref subscription_countries: subscriptions.country_id > countries.id
