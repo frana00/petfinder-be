@@ -10,6 +10,7 @@ Table alerts {
   date timestamp
   description text
   cp varchar [note: "zip code where last seen"]
+  country_id integer [not null]
 }
 
 Table photos {
@@ -29,6 +30,7 @@ Table subscriptions {
   id integer [primary key]
   user_id integer [not null]
   cp varchar 
+  country_id integer [not null]
   alert_type enum
 }
 
@@ -55,9 +57,17 @@ Table sms_notifications {
   text varchar
 }
 
+Table countries {
+  id integer [primary key]
+  name varchar [unique]
+}
+
 Ref user_alerts: alerts.user_id > users.id // many-to-one
 Ref alert_photos: photos.alert_id > alerts.id // many-to-one
 Ref user_subscriptions: subscriptions.user_id > users.id
 Ref user_notifications: notifications.user_id > users.id
 Ref email_notifications: email_notifications.notification_id - notifications.id
 Ref sms_notifications: sms_notifications.notification_id - notifications.id
+
+Ref alert_countries: alerts.country_id > countries.id
+Ref subscription_countries: subscriptions.country_id > countries.id
