@@ -1,12 +1,12 @@
 spring:
   application:
-    name: petfinder-be
+    name: petsignal-be
   
   # Database Configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/petfinder?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/petsignal
     username: root
-    password: root
+    password: rootpwd
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   # JPA Configuration

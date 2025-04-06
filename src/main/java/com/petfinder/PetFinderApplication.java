@@ -1,12 +1,12 @@
-package com.petfinder;
+package com.petsignal;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PetFinderApplication {
+public class PetSignalApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(PetFinderApplication.class, args);
+        SpringApplication.run(PetSignalApplication.class, args);
     }
 } 

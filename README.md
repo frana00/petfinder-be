@@ -1,4 +1,4 @@
-# PetFinder Backend
+# PetSignal Backend
 
 A Spring Boot application for managing pet alerts and notifications.
 
@@ -23,13 +23,13 @@ A Spring Boot application for managing pet alerts and notifications.
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/petfinder-be.git
-   cd petfinder-be
+   git clone https://github.com/yourusername/petsignal-be.git
+   cd petsignal-be
    ```
 
 2. Create a MySQL database:
    ```
-   CREATE DATABASE petfinder;
+   CREATE DATABASE petsignal;
    ```
 
 3. Configure the application:
@@ -60,7 +60,7 @@ Once the application is running, you can access the API documentation at:
 ## Project Structure
 
 ```
-src/main/java/com/petfinder/
+src/main/java/com/petsignal/
 ├── config/           # Configuration classes
 ├── controller/       # REST controllers
 ├── dto/              # Data Transfer Objects
@@ -69,7 +69,7 @@ src/main/java/com/petfinder/
 ├── repository/       # JPA repositories
 ├── security/         # Security related classes
 ├── service/          # Business logic
-└── PetFinderApplication.java
+└── PetSignalApplication.java
 ```
 
 ## Features
