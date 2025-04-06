@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: PetFinder API
+  title: PetSignal API
   description: API for managing pet alerts and notifications
   version: 1.0.0
   
@@ -492,6 +492,9 @@ components:
         status:
           type: string
           enum: [ACTIVE, RESOLVED]
+        chipNumber:
+          type: string
+          description: Chip number of the pet
         sex:
           type: string
           enum: [MALE, FEMALE, UNKNOWN]

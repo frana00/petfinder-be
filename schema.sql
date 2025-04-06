@@ -1,4 +1,4 @@
--- Database schema for PetFinder application
+-- Database schema for PetSignal application
 
 CREATE TABLE countries (
     id INT PRIMARY KEY AUTO_INCREMENT,
@@ -20,6 +20,7 @@ CREATE TABLE alerts (
     user_id INT NOT NULL,
     type ENUM('LOST', 'FOUND') NOT NULL,
     status ENUM('ACTIVE', 'RESOLVED') NOT NULL,
+    chip_number VARCHAR(50) COMMENT 'Chip number of the pet',
     sex ENUM('MALE', 'FEMALE', 'UNKNOWN'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     date TIMESTAMP NOT NULL,
