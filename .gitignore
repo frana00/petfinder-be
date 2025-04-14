@@ -473,3 +473,9 @@ MigrationBackup/
 
 # Database connection
 .db-connection
+
+# target folder
+target/
+
+# .vscode folder
+.vscode/

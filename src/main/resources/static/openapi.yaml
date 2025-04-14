@@ -3,7 +3,21 @@ info:
   title: PetSignal API
   description: API for managing pet alerts and notifications
   version: 1.0.0
-  
+
+tags:
+  - name: Alerts
+    description: Operations about alerts
+  - name: Photos
+    description: Operations about alert photos
+  - name: Users
+    description: Operations about users
+  - name: Subscriptions
+    description: Operations about subscriptions
+  - name: Notifications
+    description: Operations about notifications
+  - name: Countries
+    description: Operations about countries
+
 servers:
   - url: http://localhost:8080/api/v1
     description: Local development server
@@ -11,9 +25,17 @@ servers:
 security:
   - bearerAuth: []
 
+consumes:
+  - application/json
+produces:
+  - application/json
+
 paths:
   /alerts:
     get:
+      operationId: listAlerts
+      tags:
+        - Alerts
       summary: List all alerts
       parameters:
         - name: type
@@ -44,6 +66,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/Alert'
     post:
+      operationId: createAlert
+      tags:
+        - Alerts
       summary: Create a new alert
       requestBody:
         required: true
@@ -58,7 +83,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Alert'
-
   /alerts/{id}:
     parameters:
       - name: id
@@ -67,6 +91,9 @@ paths:
         schema:
           type: integer
     get:
+      operationId: getAlertById
+      tags:
+        - Alerts
       summary: Get an alert by ID
       responses:
         '200':
@@ -76,6 +103,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Alert'
     put:
+      operationId: updateAlert
+      tags:
+        - Alerts
       summary: Update an alert
       requestBody:
         required: true
@@ -91,11 +121,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Alert'
     delete:
+      operationId: deleteAlert
+      tags:
+        - Alerts
       summary: Delete an alert
       responses:
         '204':
           description: Alert deleted
-
   /alerts/{alertId}/photos:
     parameters:
       - name: alertId
@@ -104,6 +136,9 @@ paths:
         schema:
           type: integer
     get:
+      operationId: listAlertPhotos
+      tags:
+        - Photos
       summary: List photos for an alert
       responses:
         '200':
@@ -115,6 +150,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/Photo'
     post:
+      operationId: addPhotoToAlert
+      tags:
+        - Photos
       summary: Add a photo to an alert
       requestBody:
         required: true
@@ -132,6 +170,9 @@ paths:
 
   /users:
     get:
+      operationId: listUsers
+      tags:
+        - Users
       summary: List all users
       responses:
         '200':
@@ -143,13 +184,16 @@ paths:
                 items:
                   $ref: '#/components/schemas/User'
     post:
+      operationId: createUser
+      tags:
+        - Users
       summary: Create a new user
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/CreateUserRequest'
       responses:
         '201':
           description: User created
@@ -157,7 +201,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-
   /users/{id}:
     parameters:
       - name: id
@@ -166,6 +209,9 @@ paths:
         schema:
           type: integer
     get:
+      operationId: getUserById
+      tags:
+        - Users
       summary: Get a user by ID
       responses:
         '200':
@@ -175,6 +221,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
     put:
+      operationId: updateUser
+      tags:
+        - Users
       summary: Update a user
       requestBody:
         required: true
@@ -190,6 +239,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
     delete:
+      operationId: deleteUser
+      tags:
+        - Users
       summary: Delete a user
       responses:
         '204':
@@ -197,6 +249,9 @@ paths:
 
   /subscriptions:
     get:
+      operationId: listSubscriptions
+      tags:
+        - Subscriptions
       summary: List all subscriptions
       parameters:
         - name: userId
@@ -217,6 +272,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/Subscription'
     post:
+      operationId: createSubscription
+      tags:
+        - Subscriptions
       summary: Create a new subscription
       requestBody:
         required: true
@@ -240,6 +298,9 @@ paths:
         schema:
           type: integer
     get:
+      operationId: getSubscriptionById
+      tags:
+        - Subscriptions
       summary: Get a subscription by ID
       responses:
         '200':
@@ -249,6 +310,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Subscription'
     put:
+      operationId: updateSubscription
+      tags:
+        - Subscriptions
       summary: Update a subscription
       requestBody:
         required: true
@@ -264,6 +328,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Subscription'
     delete:
+      operationId: deleteSubscription
+      tags:
+        - Subscriptions
       summary: Delete a subscription
       responses:
         '204':
@@ -271,6 +338,9 @@ paths:
 
   /notifications:
     get:
+      operationId: listNotifications
+      tags:
+        - Notifications
       summary: List all notifications
       parameters:
         - name: userId
@@ -296,6 +366,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/Notification'
     post:
+      operationId: createNotification
+      tags:
+        - Notifications
       summary: Create a new notification
       requestBody:
         required: true
@@ -319,6 +392,9 @@ paths:
         schema:
           type: integer
     get:
+      operationId: getNotificationById
+      tags:
+        - Notifications
       summary: Get a notification by ID
       responses:
         '200':
@@ -330,6 +406,9 @@ paths:
 
   /email-notifications:
     get:
+      operationId: listEmailNotifications
+      tags:
+        - Notifications
       summary: List all email notifications
       parameters:
         - name: status
@@ -347,6 +426,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/EmailNotification'
     post:
+      operationId: createEmailNotification
+      tags:
+        - Notifications
       summary: Create a new email notification
       requestBody:
         required: true
@@ -364,6 +446,9 @@ paths:
 
   /sms-notifications:
     get:
+      operationId: listSmsNotifications
+      tags:
+        - Notifications
       summary: List all SMS notifications
       parameters:
         - name: status
@@ -381,6 +466,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/SmsNotification'
     post:
+      operationId: createSmsNotification
+      tags:
+        - Notifications
       summary: Create a new SMS notification
       requestBody:
         required: true
@@ -398,6 +486,9 @@ paths:
 
   /countries:
     get:
+      operationId: listCountries
+      tags:
+        - Countries
       summary: List all countries
       responses:
         '200':
@@ -409,6 +500,9 @@ paths:
                 items:
                   $ref: '#/components/schemas/Country'
     post:
+      operationId: createCountry
+      tags:
+        - Countries
       summary: Create a new country
       requestBody:
         required: true
@@ -432,6 +526,9 @@ paths:
         schema:
           type: integer
     get:
+      operationId: getCountryById
+      tags:
+        - Countries
       summary: Get a country by ID
       responses:
         '200':
@@ -441,6 +538,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Country'
     put:
+      operationId: updateCountry
+      tags:
+        - Countries
       summary: Update a country
       requestBody:
         required: true
@@ -456,6 +556,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Country'
     delete:
+      operationId: deleteCountry
+      tags:
+        - Countries
       summary: Delete a country
       responses:
         '204':
@@ -511,7 +614,6 @@ components:
           type: string
         cp:
           type: string
-          description: Zip code where last seen
         countryId:
           type: integer
       required:
@@ -537,8 +639,44 @@ components:
         - alertId
         - url
 
+    CreateUserRequest:
+      type: object
+      example:
+        username: "hannah_bannanah"
+        email: "hannah@bannanah.com"
+        subscriptionEmail: "bannanah@notifications.com"
+        phoneNumber: "+34123456789"
+      properties:
+        username:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        subscriptionEmail:
+          type: string
+          format: email
+          maxLength: 100
+          nullable: true
+        phoneNumber:
+          type: string
+          maxLength: 20
+          nullable: true
+      required:
+        - username
+        - email
+
     User:
       type: object
+      example:
+        id: 1
+        username: "hannah_bannanah"
+        email: "hannah@bannanah.com"
+        subscriptionEmail: "bannanah@notifications.com"
+        phoneNumber: "+34123456789"
+        role: "USER"
+        createdAt: "2024-03-15T14:30:00Z"
       properties:
         id:
           type: integer
@@ -550,11 +688,11 @@ components:
           type: string
           format: email
           maxLength: 100
-        subscription_email:
+        subscriptionEmail:
           type: string
           format: email
           maxLength: 100
-        phone_number:
+        phoneNumber:
           type: string
           maxLength: 20
         role:
@@ -567,7 +705,6 @@ components:
       required:
         - username
         - email
-        - subscription_email
         - role
 
     Subscription:

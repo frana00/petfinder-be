@@ -1,5 +1,4 @@
 -- Database schema for PetSignal application
-
 CREATE TABLE countries (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL UNIQUE
@@ -12,7 +11,7 @@ CREATE TABLE users (
     subscription_email VARCHAR(100) NOT NULL,
     phone_number VARCHAR(20),
     role ENUM('ADMIN', 'USER') NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE alerts (
@@ -22,7 +21,7 @@ CREATE TABLE alerts (
     status ENUM('ACTIVE', 'RESOLVED') NOT NULL,
     chip_number VARCHAR(50) COMMENT 'Chip number of the pet',
     sex ENUM('MALE', 'FEMALE', 'UNKNOWN'),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
     date TIMESTAMP NOT NULL,
     description TEXT,
     breed VARCHAR(100),
@@ -54,7 +53,7 @@ CREATE TABLE notifications (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     alert_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT NOW(),
     type ENUM('EMAIL', 'SMS') NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (alert_id) REFERENCES alerts(id)
