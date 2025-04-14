@@ -35,7 +35,7 @@ Table photos {
 Table users {
   id integer [primary key]
   username varchar(50) [not null]
-  email varchar(100) [not null unique]
+  email varchar(100) [unique]
   subscription_email varchar(100) [not null]
   phone_number varchar(20)
   role enum('ADMIN', 'USER') [not null]
@@ -89,6 +89,15 @@ Table countries {
   name varchar(100) [unique, not null]
 }
 
+Table posts {
+  id integer [pk, increment]
+  user_id integer
+  alert_id integer 
+  content text [not null]
+  created_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [not null, default: `CURRENT_TIMESTAMP`, note: "Updated automatically"]
+}
+
 Ref user_alerts: alerts.user_id > users.id // many-to-one
 Ref alert_photos: photos.alert_id > alerts.id // many-to-one
 Ref user_subscriptions: subscriptions.user_id > users.id
@@ -97,3 +106,5 @@ Ref email_notifications: email_notifications.notification_id - notifications.id
 Ref sms_notifications: sms_notifications.notification_id - notifications.id
 Ref alert_countries: alerts.country_id > countries.id
 Ref subscription_countries: subscriptions.country_id > countries.id
+Ref alert_posts: posts.alert_id > alerts.id // many-to-one
+Ref user_posts: posts.user_id > users.id // many-to-one

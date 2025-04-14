@@ -55,4 +55,12 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     url: /openapi.yaml
-  show-actuator: false 
+  show-actuator: false
+
+# Spring DevTools Configuration
+spring:
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+      exclude: WEB-INF/** 

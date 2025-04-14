@@ -76,6 +76,16 @@ CREATE TABLE sms_notifications (
     FOREIGN KEY (notification_id) REFERENCES notifications(id)
 );
 
+CREATE TABLE posts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    alert_id INT NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (alert_id) REFERENCES alerts(id)
+);
+
 -- Indexes for better query performance
 CREATE INDEX idx_alerts_user ON alerts(user_id);
 CREATE INDEX idx_alerts_date ON alerts(date);
@@ -84,4 +94,7 @@ CREATE INDEX idx_photos_alert ON photos(alert_id);
 CREATE INDEX idx_subscriptions_user ON subscriptions(user_id);
 CREATE INDEX idx_subscriptions_country ON subscriptions(country_id);
 CREATE INDEX idx_notifications_user ON notifications(user_id);
-CREATE INDEX idx_notifications_alert ON notifications(alert_id); 
+CREATE INDEX idx_notifications_alert ON notifications(alert_id);
+CREATE INDEX idx_posts_user_id ON posts(user_id);
+CREATE INDEX idx_posts_alert_id ON posts(alert_id);
+CREATE INDEX idx_posts_created_at ON posts(created_at); 
