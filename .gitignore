@@ -473,6 +473,7 @@ MigrationBackup/
 
 # Database connection
 .db-connection
+**/application-local.yml
 
 # target folder
 target/

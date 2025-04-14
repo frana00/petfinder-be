@@ -11,13 +11,13 @@ public interface UserMapper {
     
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", constant = "USER")
-    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     User toEntity(UserRequest request);
     
     UserResponseDto toResponseDto(User user);
     
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", ignore = true)
-    @Mapping(target = "createdAt", ignore = true)
-    void updateEntityFromRequest(UserRequest request, @MappingTarget User user);
+    @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
+    void updateEntityFromRequest(UserRequest request, @MappingTarget User user); // TODO do we need this?
 } 

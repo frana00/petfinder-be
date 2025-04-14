@@ -1,12 +1,18 @@
+# Server Configuration
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
 spring:
   application:
     name: petsignal-be
   
   # Database Configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/petsignal
-    username: root
-    password: root
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   
   # JPA Configuration
@@ -38,12 +44,13 @@ spring:
     time-zone: UTC
     serialization:
       write-dates-as-timestamps: false
-
-# Server Configuration
-server:
-  port: 8080
-  servlet:
-    context-path: /api/v1
+  
+  # Spring DevTools Configuration
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+      exclude: WEB-INF/** 
 
 # JWT Configuration
 jwt:
@@ -56,11 +63,3 @@ springdoc:
     path: /swagger-ui.html
     url: /openapi.yaml
   show-actuator: false
-
-# Spring DevTools Configuration
-spring:
-  devtools:
-    restart:
-      enabled: true
-      additional-paths: src/main/java
-      exclude: WEB-INF/** 
