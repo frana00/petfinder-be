@@ -1,7 +1,14 @@
 -- Database schema for PetSignal application
 CREATE TABLE countries (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL UNIQUE
+    country_code VARCHAR(2) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE postal_codes (
+    postal_code VARCHAR(10) NOT NULL,
+    country_code VARCHAR(2) NOT NULL,
+    PRIMARY KEY (postal_code, country_code),
+    FOREIGN KEY (country_code) REFERENCES countries(country_code)
 );
 
 CREATE TABLE users (
@@ -26,9 +33,9 @@ CREATE TABLE alerts (
     description TEXT,
     breed VARCHAR(100),
     cp VARCHAR(10) NOT NULL COMMENT 'zip code where last seen',
-    country_id INT NOT NULL,
+    country_code VARCHAR(2) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (country_id) REFERENCES countries(id)
+    FOREIGN KEY (country_code) REFERENCES countries(country_code)
 );
 
 CREATE TABLE photos (
@@ -42,11 +49,11 @@ CREATE TABLE subscriptions (
     id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     cp VARCHAR(10) NOT NULL,
-    country_id INT NOT NULL,
+    country_code VARCHAR(2) NOT NULL,
     alert_type ENUM('LOST', 'FOUND') NOT NULL,
     type ENUM('EMAIL', 'SMS') NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id),
-    FOREIGN KEY (country_id) REFERENCES countries(id)
+    FOREIGN KEY (country_code) REFERENCES countries(country_code)
 );
 
 CREATE TABLE notifications (
@@ -97,4 +104,4 @@ CREATE INDEX idx_notifications_user ON notifications(user_id);
 CREATE INDEX idx_notifications_alert ON notifications(alert_id);
 CREATE INDEX idx_posts_user_id ON posts(user_id);
 CREATE INDEX idx_posts_alert_id ON posts(alert_id);
-CREATE INDEX idx_posts_created_at ON posts(created_at); 
+CREATE INDEX idx_posts_created_at ON posts(created_at);

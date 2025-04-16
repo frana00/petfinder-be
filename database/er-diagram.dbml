@@ -85,8 +85,14 @@ Table sms_notifications {
 }
 
 Table countries {
-  id integer [primary key]
-  name varchar(100) [unique, not null]
+  country_code varchar(2) [primary key]
+  name varchar(100) [not null]
+}
+
+Table postal_codes {
+  postal_code varchar(10) [primary key]
+  country_code varchar(2) [primary key]
+  name varchar(100) [not null]
 }
 
 Table posts {
@@ -108,3 +114,4 @@ Ref alert_countries: alerts.country_id > countries.id
 Ref subscription_countries: subscriptions.country_id > countries.id
 Ref alert_posts: posts.alert_id > alerts.id // many-to-one
 Ref user_posts: posts.user_id > users.id // many-to-one
+Ref cp_country: postal_codes.country_code > countries.country_code 
