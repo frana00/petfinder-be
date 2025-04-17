@@ -478,7 +478,10 @@ MigrationBackup/
 # aws access key
 **/petsignal-be_accessKeys.csv
 # target folder
-target/
+target/*
 
 # .vscode folder
-.vscode/
+.vscode/*
+
+# .idea folder
+.idea/*
