@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 
 @Data
 @Schema(name = "User")
-public class UserResponseDto {
-    private Integer id;
+public class UserResponse {
+    private Long id;
     private String username;
     private String email;
     private String subscriptionEmail;

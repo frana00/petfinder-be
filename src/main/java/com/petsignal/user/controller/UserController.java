@@ -1,7 +1,9 @@
-package com.petsignal.user;
+package com.petsignal.user.controller;
 
 import com.petsignal.user.dto.UserRequest;
-import com.petsignal.user.dto.UserResponseDto;
+import com.petsignal.user.dto.UserResponse;
+import com.petsignal.user.service.UserService;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -20,33 +22,33 @@ public class UserController {
     
     @Operation(operationId = "listUsers")
     @GetMapping
-    public List<UserResponseDto> getUsers() {
+    public List<UserResponse> getUsers() {
         return userService.getAllUsers();
     }
 
     @Operation(operationId = "getUserById")
     @GetMapping("/{id}")
-    public UserResponseDto getUser(@PathVariable Integer id) {
+    public UserResponse getUser(@PathVariable Long id) {
         return userService.findById(id);
     }
     
     @Operation(operationId = "createUser")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDto createUser(@Valid @RequestBody UserRequest request) {
+    public UserResponse createUser(@Valid @RequestBody UserRequest request) {
         return userService.createUser(request);
     }
     
     @Operation(operationId = "updateUser")
     @PutMapping("/{id}")
-    public UserResponseDto updateUser(@PathVariable Integer id, @Valid @RequestBody UserRequest request) {
+    public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
         return userService.updateUser(id, request);
     }
     
     @Operation(operationId = "deleteUser")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable Integer id) {
+    public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
 } 

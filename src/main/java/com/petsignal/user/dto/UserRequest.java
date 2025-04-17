@@ -8,8 +8,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-@Schema(name = "UserRequest", description = "Request for creating or updating a user")
+@Schema(name = "User", description = "Request for creating or updating a user")
 public class UserRequest {
+    
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;

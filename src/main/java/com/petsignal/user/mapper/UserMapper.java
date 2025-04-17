@@ -1,7 +1,9 @@
-package com.petsignal.user;
+package com.petsignal.user.mapper;
 
 import com.petsignal.user.dto.UserRequest;
-import com.petsignal.user.dto.UserResponseDto;
+import com.petsignal.user.dto.UserResponse;
+import com.petsignal.user.entity.User;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -14,10 +16,10 @@ public interface UserMapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     User toEntity(UserRequest request);
     
-    UserResponseDto toResponseDto(User user);
-    
+    UserResponse toResponse(User user);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
-    void updateEntityFromRequest(UserRequest request, @MappingTarget User user); // TODO do we need this?
+    void updateEntityFromRequest(UserRequest request, @MappingTarget User user);
 } 

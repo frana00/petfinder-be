@@ -1,4 +1,4 @@
-package com.petsignal.user;
+package com.petsignal.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     
     @Column(nullable = false, length = 50)
     private String username;
