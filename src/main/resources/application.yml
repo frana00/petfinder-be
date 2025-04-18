@@ -52,9 +52,9 @@ spring:
       exclude: WEB-INF/** 
 
 # JWT Configuration
-jwt:
-  secret: ${JWT_SECRET:your-secret-key-should-be-very-long-and-secure}
-  expiration: 86400000 # 24 hours in milliseconds
+#jwt:
+#  secret: ${JWT_SECRET:your-secret-key-should-be-very-long-and-secure}
+#  expiration: 86400000 # 24 hours in milliseconds
 
 # OpenAPI Configuration
 springdoc:
@@ -62,3 +62,11 @@ springdoc:
     path: /swagger-ui.html
     url: /openapi.yaml
   show-actuator: false
+
+# AWS Configuration
+aws:
+  access-key-id: ${AWS_ACCESS_KEY_ID}
+  secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+  s3:
+    region: ${AWS_REGION:us-east-1}
+    bucket-name: ${AWS_S3_BUCKET_NAME}

@@ -36,7 +36,7 @@ public class Alert {
     private String chipNumber;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "sex")
+    @Column
     private AlertSex sex;
 
     @Column(nullable = false)

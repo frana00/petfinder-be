@@ -528,7 +528,6 @@ components:
           format: int32
         message:
           type: string
-
     Alert:
       type: object
       example:
@@ -543,6 +542,7 @@ components:
         breed: "mixed"
         postalCode: "04001"
         countryCode: ES
+        photos: ["myImage.jpg"]
       properties:
         id:
           type: integer
@@ -580,6 +580,10 @@ components:
           type: string
         countryCode:
           type: string
+        photos:
+          type: array
+          items:
+            type: string
       required:
         - userId
         - type

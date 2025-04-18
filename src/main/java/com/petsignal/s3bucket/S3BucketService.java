@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
@@ -25,33 +24,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class S3BucketService {
 
-//    private final S3Client s3Client;
     private final S3Presigner s3Presigner;
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
-//
-//    public String uploadPhoto(MultipartFile file) {
-//
-//        String fileName = file.getOriginalFilename();
-//        String fileExtension = Objects.requireNonNull(fileName).substring(fileName.lastIndexOf("."));
-//        String objectId = UUID.randomUUID().toString();
-//
-//        try {
-//            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
-//                    .bucket(bucketName)
-//                    .key(objectId + fileExtension)
-//                    .contentType(file.getContentType())
-//                    .build();
-//
-//            s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
-//
-//            return s3Client.utilities().getUrl(builder -> builder.bucket(bucketName).key(fileName)).toString();
-//        } catch (IOException e) {
-//            log.error("Error uploading file to S3", e);
-//            throw new S3BucketException("Failed to upload file to S3: " + e.getMessage(), e);
-//        }
-//    }
 
     public String createPresignedUrl(String key, String contentType) {
 

@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Schema(description = "Request to create or update an alert")
@@ -43,4 +44,6 @@ public class AlertRequest {
 
     @Size(max = 100)
     private String breed;
+
+    private List<String> photos;
 } 
