@@ -2,6 +2,7 @@ package com.petsignal.alert.dto;
 
 import com.petsignal.alert.entity.AlertStatus;
 import com.petsignal.alert.entity.AlertType;
+import com.petsignal.photos.dto.PhotoUrl;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -38,5 +39,5 @@ public class AlertResponse {
 
     private LocalDateTime updatedAt;
 
-    private List<String> presignedS3Urls;
+    private List<PhotoUrl> photoUrls;
 } 

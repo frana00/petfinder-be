@@ -70,14 +70,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Alert'
+              $ref: '#/components/schemas/CreateAlertRequest'
       responses:
         '201':
           description: Alert created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Alert'
+                $ref: '#/components/schemas/CreateAlertResponse'
   /alerts/{id}:
     parameters:
       - name: id
@@ -542,7 +542,6 @@ components:
         breed: "mixed"
         postalCode: "04001"
         countryCode: ES
-        photos: ["myImage.jpg"]
       properties:
         id:
           type: integer
@@ -580,10 +579,6 @@ components:
           type: string
         countryCode:
           type: string
-        photos:
-          type: array
-          items:
-            type: string
       required:
         - userId
         - type
@@ -597,12 +592,10 @@ components:
       properties:
         id:
           type: integer
-          readOnly: true
         alertId:
           type: integer
-        url:
+        s3objectKey:
           type: string
-          format: uri
       required:
         - alertId
         - url
@@ -739,4 +732,39 @@ components:
         name:
           type: string
       required:
-        - name 
+        - name
+
+    CreateAlertRequest:
+      allOf:
+        - $ref: '#/components/schemas/Alert'
+        - type: object
+          properties:
+            photoFilenames:
+              type: array
+              example: ["image.jpg"]
+              items:
+                type: string
+
+    CreateAlertResponse:
+      allOf:
+        - $ref: '#/components/schemas/Alert'
+        - type: object
+          properties:
+            photoUrls:
+              type: array
+              items:
+                $ref: '#/components/schemas/PhotoUrl'
+
+    PhotoUrl:
+      type: object
+      properties:
+        s3ObjectKey:
+          type: string
+          example: "orignalFilename__abc123.jpg"
+        presignedUrl:
+          type: string
+          format: uri
+          example: "https:s3.region.aws.com/bucket/originalFilename__abc123.jpg"
+      required:
+        - s3ObjectKey
+        - presignedUrl

@@ -8,8 +8,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import com.petsignal.postcodes.entity.PostCode;
 import com.petsignal.user.entity.User;
+import com.petsignal.photos.entity.Photo;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -54,6 +57,9 @@ public class Alert {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "postal_code_id", nullable = false)
     private PostCode postCode;
+
+    @OneToMany(mappedBy = "alert", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Photo> photos = new ArrayList<>();
 
     @Column(name = "updated_at", nullable = false)
     @UpdateTimestamp

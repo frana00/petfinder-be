@@ -15,35 +15,35 @@ import java.util.List;
 @Data
 @Schema(description = "Request to create or update an alert")
 public class AlertRequest {
-    
-    @NotNull(message = "User ID is required")
-    private Long userId;
 
-    @NotNull(message = "Alert type is required")
-    private AlertType type;
+  @NotNull(message = "User ID is required")
+  private Long userId;
 
-    @NotNull(message = "Alert status is required")
-    private AlertStatus status;
+  @NotNull(message = "Alert type is required")
+  private AlertType type;
 
-    private String chipNumber;
+  @NotNull(message = "Alert status is required")
+  private AlertStatus status;
 
-    @NotBlank(message = "Postal code is required")
-    @Pattern(regexp = "^\\d{5}$", message = "Postal code must be 5 digits")
-    private String postalCode;
+  private String chipNumber;
 
-    @NotNull(message = "Country code is required")
-    private String countryCode;
+  @NotBlank(message = "Postal code is required")
+  @Pattern(regexp = "^\\d{5}$", message = "Postal code must be 5 digits")
+  private String postalCode;
 
-    @NotNull(message = "Date is required")
-    private LocalDateTime date;
+  @NotNull(message = "Country code is required")
+  private String countryCode;
 
-    @Size(max = 100)
-    private String title;
+  @NotNull(message = "Date is required")
+  private LocalDateTime date;
 
-    private String description;
+  @Size(max = 100)
+  private String title;
 
-    @Size(max = 100)
-    private String breed;
+  private String description;
 
-    private List<String> photos;
+  @Size(max = 100)
+  private String breed;
+
+  private List<String> photoFilenames;
 } 
