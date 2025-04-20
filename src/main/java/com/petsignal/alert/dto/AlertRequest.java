@@ -2,6 +2,7 @@ package com.petsignal.alert.dto;
 
 import com.petsignal.alert.entity.AlertStatus;
 import com.petsignal.alert.entity.AlertType;
+import com.petsignal.alert.validator.ValidFileExtension;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -45,5 +46,6 @@ public class AlertRequest {
   @Size(max = 100)
   private String breed;
 
+  @ValidFileExtension
   private List<String> photoFilenames;
 } 

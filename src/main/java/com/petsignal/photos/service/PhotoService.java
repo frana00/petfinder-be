@@ -1,13 +1,16 @@
 package com.petsignal.photos.service;
 
 import com.petsignal.alert.entity.Alert;
+import com.petsignal.exception.UnsupportedFileTypeException;
 import com.petsignal.photos.dto.PhotoUrl;
 import com.petsignal.photos.entity.Photo;
 import com.petsignal.photos.repository.PhotoRepository;
 import com.petsignal.s3bucket.S3BucketService;
+import io.micrometer.common.util.StringUtils;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 
+import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.http.MediaType.IMAGE_PNG;
 
 @Data
@@ -31,10 +35,10 @@ public class PhotoService {
     Photo photoEntity = new Photo();
     photoEntity.setAlert(alert);
 
-    String extension = "";
     int extensionStart = filename.lastIndexOf(".");
-    if (extensionStart != 1) {
-      extension = "." + filename.substring(extensionStart + 1);
+    String extension = extractFileExtensionFromName(filename);
+    if (StringUtils.isNotBlank(extension)) {
+      extension = "." + extension;
       filename = filename.substring(0, extensionStart);
     }
     String objectKey = filename + "__" + UUID.randomUUID() + extension;
@@ -45,17 +49,17 @@ public class PhotoService {
   public PhotoUrl createPhotoPresignedUrl(String s3ObjectKey) {
     return new PhotoUrl(
         s3ObjectKey,
-        s3BucketService.createPutPresignedUrl(s3ObjectKey, IMAGE_PNG)
+        s3BucketService.createPutPresignedUrl(s3ObjectKey, getMediaType(s3ObjectKey))
     );
   }
 
-  public String uploadPhotoToS3(MultipartFile file, String presignedUrl, String s3ObjectKey) {
+  public String uploadPhotoToS3(String s3ObjectKey, String presignedUrl, MultipartFile file) {
     File tempFile = null;
     try {
       tempFile = File.createTempFile("upload-", "-" + file.getOriginalFilename());
       file.transferTo(tempFile);
-      s3BucketService.uploadFileWithPresignedUrl(presignedUrl, tempFile, IMAGE_PNG);
-      return s3BucketService.createGetPresignedUrl(s3ObjectKey, IMAGE_PNG);
+      s3BucketService.uploadFileWithPresignedUrl(presignedUrl, tempFile, getMediaType(s3ObjectKey));
+      return s3BucketService.createGetPresignedUrl(s3ObjectKey, getMediaType(s3ObjectKey));
     } catch (IOException e) {
       log.warn("Could not read file {}", file.getOriginalFilename(), e);
       return null;
@@ -70,7 +74,25 @@ public class PhotoService {
     }
   }
 
-  public byte[] retrievePhotoFromS3(String presignedUrl) {
-    return s3BucketService.useSdkHttpClientToGet(presignedUrl, IMAGE_PNG);
+  public byte[] retrievePhotoFromS3(String s3ObjectKey, String presignedUrl) {
+    return s3BucketService.retrieveFileFromS3(presignedUrl, getMediaType(s3ObjectKey));
+  }
+
+  public MediaType getMediaType(String objectKey) {
+    String extension = extractFileExtensionFromName(objectKey);
+    return switch (extension) {
+      case "png" -> IMAGE_PNG;
+      case "jpg", "jpeg" -> IMAGE_JPEG;
+      default -> throw new UnsupportedFileTypeException("Unsupported or missing file extension: " + extension);
+    };
+  }
+
+  private String extractFileExtensionFromName(String filename) {
+    String extension = "";
+    int extensionStart = filename.lastIndexOf(".");
+    if (extensionStart != 1) {
+      extension = filename.substring(extensionStart + 1);
+    }
+    return extension;
   }
 }

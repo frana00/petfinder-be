@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.core.internal.sync.FileContentStreamProvider;
 import software.amazon.awssdk.http.*;
 import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -20,10 +21,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.file.Path;
 import java.time.Duration;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
@@ -72,41 +69,40 @@ public class S3BucketService {
 
   }
 
-
   public void uploadFileWithPresignedUrl(String presignedUrlString, File fileToPut, MediaType contentType) {
     log.info("Begin [{}] upload", fileToPut.toString());
 
-    HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+    try {
 
-    try (HttpClient httpClient = HttpClient.newHttpClient()) {
-      final HttpResponse<Void> response = httpClient.send(requestBuilder
-              .uri(URI.create(presignedUrlString))
-              .header(CONTENT_TYPE, contentType.toString())
-              .PUT(HttpRequest.BodyPublishers.ofFile(Path.of(fileToPut.toURI())))
-              .build(),
-          HttpResponse.BodyHandlers.discarding());
+      SdkHttpRequest.Builder requestBuilder = SdkHttpRequest.builder()
+          .method(SdkHttpMethod.PUT)
+          .putHeader(CONTENT_TYPE, contentType.toString())
+          .uri(URI.create(presignedUrlString));
 
-      HttpStatus responseStatus = HttpStatus.valueOf(response.statusCode());
-      log.info("HTTP response code is {}", responseStatus);
+      // Finish building the request.
+      SdkHttpRequest request = requestBuilder.build();
 
-      if (responseStatus.isError()) {
-        throw new S3BucketException(UPLOAD_ERROR_MESSAGE);
+      HttpExecuteRequest executeRequest = HttpExecuteRequest.builder()
+          .request(request)
+          .contentStreamProvider(new FileContentStreamProvider(fileToPut.toPath()))
+          .build();
+
+      try (SdkHttpClient sdkHttpClient = ApacheHttpClient.create()) {
+        HttpExecuteResponse response = sdkHttpClient.prepareRequest(executeRequest).call();
+        log.info("Http response code: {}", response.httpResponse().statusCode());
       }
-
-    } catch (InterruptedException | IOException e) {
+    } catch (IOException e) {
       log.error(e.getMessage(), e);
-      Thread.currentThread().interrupt();
       throw new S3BucketException(UPLOAD_ERROR_MESSAGE, e);
     }
   }
 
-  public byte[] useSdkHttpClientToGet(String presignedUrlString, MediaType contentType) {
+  public byte[] retrieveFileFromS3(String presignedUrlString, MediaType contentType) {
 
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); // Capture the response body to a byte array.
     try {
       SdkHttpRequest request = SdkHttpRequest.builder()
           .method(SdkHttpMethod.GET)
-//          .putHeader("Content-Type", contentType.toString())
           .putHeader(CONTENT_TYPE, contentType.toString())
           .uri(URI.create(presignedUrlString))
           .build();
