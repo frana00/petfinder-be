@@ -163,6 +163,55 @@ paths:
               schema:
                 $ref: '#/components/schemas/Photo'
 
+  /photos/s3:
+    get:
+      operationId: getPhotoFromS3
+      tags:
+        - Photos
+      summary: retrieve a photo from s3
+      parameters:
+        - name: presignedUrl
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uri
+      responses:
+        '200':
+          description: Photo correctly retrieve
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+
+    put:
+      operationId: uploadToS3
+      tags:
+        - Photos
+      summary: Upload photo to s3
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                presignedUrl:
+                  type: string
+                  format: uri
+                objectKey:
+                  type: string
+              required:
+                - file
+                - presignedUrl
+                - objectKey
+      responses:
+        '201':
+          description: Upload successful
   /users:
     get:
       operationId: listUsers

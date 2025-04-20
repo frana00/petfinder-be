@@ -7,11 +7,20 @@ import com.petsignal.photos.repository.PhotoRepository;
 import com.petsignal.s3bucket.S3BucketService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 
+import static org.springframework.http.MediaType.IMAGE_PNG;
+
 @Data
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PhotoService {
@@ -36,7 +45,32 @@ public class PhotoService {
   public PhotoUrl createPhotoPresignedUrl(String s3ObjectKey) {
     return new PhotoUrl(
         s3ObjectKey,
-        s3BucketService.createPresignedUrl(s3ObjectKey, "image/jpeg")
+        s3BucketService.createPutPresignedUrl(s3ObjectKey, IMAGE_PNG)
     );
+  }
+
+  public String uploadPhotoToS3(MultipartFile file, String presignedUrl, String s3ObjectKey) {
+    File tempFile = null;
+    try {
+      tempFile = File.createTempFile("upload-", "-" + file.getOriginalFilename());
+      file.transferTo(tempFile);
+      s3BucketService.uploadFileWithPresignedUrl(presignedUrl, tempFile, IMAGE_PNG);
+      return s3BucketService.createGetPresignedUrl(s3ObjectKey, IMAGE_PNG);
+    } catch (IOException e) {
+      log.warn("Could not read file {}", file.getOriginalFilename(), e);
+      return null;
+    } finally {
+      if (tempFile != null) {
+        try {
+          Files.delete(Path.of(tempFile.getAbsolutePath()));
+        } catch (IOException e) {
+          log.warn("Temporary auxiliary file could not be deleted");
+        }
+      }
+    }
+  }
+
+  public byte[] retrievePhotoFromS3(String presignedUrl) {
+    return s3BucketService.useSdkHttpClientToGet(presignedUrl, IMAGE_PNG);
   }
 }
