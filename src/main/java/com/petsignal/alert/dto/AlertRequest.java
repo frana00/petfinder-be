@@ -48,6 +48,7 @@ public class AlertRequest {
   @NotNull(message = "Country code is required")
   private String countryCode;
 
+  @Size(max = 5, message = "You can upload a maximum of 5 photos")
   @ValidFileExtension
   private List<String> photoFilenames;
 } 
