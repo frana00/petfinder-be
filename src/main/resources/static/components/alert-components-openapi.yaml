@@ -1,0 +1,77 @@
+Alert:
+  type: object
+  example:
+    userId: 0
+    type: SEEN
+    chipNumber: "9999342343214322"
+    status: ACTIVE
+    sex: UNKNOWN
+    date: "2025-04-17T16:40:27.914Z"
+    title: "Found a cutie pie"
+    description: "Seen at the beach, swimming"
+    breed: "mixed"
+    postalCode: "04001"
+    countryCode: ES
+  properties:
+    id:
+      type: integer
+      readOnly: true
+    userId:
+      type: integer
+    type:
+      type: string
+      enum: [ LOST, SEEN ]
+    status:
+      type: string
+      enum: [ ACTIVE, RESOLVED ]
+    chipNumber:
+      type: string
+      description: Chip number of the pet
+    sex:
+      type: string
+      enum: [ MALE, FEMALE, UNKNOWN ]
+    createdAt:
+      type: string
+      format: date-time
+      readOnly: true
+    updatedAt:
+      type: string
+      format: date-time
+      readOnly: true
+    date:
+      type: string
+      format: date-time
+    description:
+      type: string
+    breed:
+      type: string
+    postalCode:
+      type: string
+    countryCode:
+      type: string
+  required:
+    - userId
+    - type
+    - date
+    - postalCode
+    - countryCode
+    - title
+CreateAlertRequest:
+  allOf:
+    - $ref: '#/Alert'
+    - type: object
+      properties:
+        photoFilenames:
+          type: array
+          example: ["image.jpg"]
+          items:
+            type: string
+CreateAlertResponse:
+  allOf:
+    - $ref: '#/Alert'
+    - type: object
+      properties:
+        photoUrls:
+          type: array
+          items:
+            $ref: './photo-components-openapi.yaml#/PhotoUrl'

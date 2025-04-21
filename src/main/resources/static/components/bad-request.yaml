@@ -1,0 +1,12 @@
+BadRequest:
+  type: object
+  properties:
+    timestamp:
+      type: string
+      format: datetime
+    status:
+      type: string
+    error:
+      type: string
+    path:
+      type: string

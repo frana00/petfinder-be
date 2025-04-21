@@ -1,0 +1,78 @@
+users:
+  get:
+    operationId: listUsers
+    tags:
+      - Users
+    summary: List all users
+    responses:
+      '200':
+        description: List of users
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../components/users-components.yaml#/User'
+  post:
+    operationId: createUser
+    tags:
+      - Users
+    summary: Create a new user
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/users-components.yaml#/User'
+    responses:
+      '201':
+        description: User created
+        content:
+          application/json:
+            schema:
+              $ref: '../components/users-components.yaml#/User'
+users_id:
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+  get:
+    operationId: getUserById
+    tags:
+      - Users
+    summary: Get a user by ID
+    responses:
+      '200':
+        description: User found
+        content:
+          application/json:
+            schema:
+              $ref: '../components/users-components.yaml#/User'
+  put:
+    operationId: updateUser
+    tags:
+      - Users
+    summary: Update a user
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/users-components.yaml#/User'
+    responses:
+      '200':
+        description: User updated
+        content:
+          application/json:
+            schema:
+              $ref: '../components/users-components.yaml#/User'
+  delete:
+    operationId: deleteUser
+    tags:
+      - Users
+    summary: Delete a user
+    responses:
+      '204':
+        description: User deleted

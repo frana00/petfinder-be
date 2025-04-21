@@ -51,11 +51,14 @@ public class AlertService {
     Alert alert = alertMapper.toEntity(request);
     alert.setPostCode(postCode);
 
-    List<Photo> photos = request.getPhotoFilenames().stream()
-        .map(filename -> photoService.createPhotoEntityForAlert(filename, alert))
-        .toList();
+    List<String> photoFilenames = request.getPhotoFilenames();
+    if (photoFilenames != null && !photoFilenames.isEmpty()) {
+      List<Photo> photos = photoFilenames.stream()
+          .map(filename -> photoService.createPhotoEntityForAlert(filename, alert))
+          .toList();
 
-    alert.setPhotos(photos);
+      alert.setPhotos(photos);
+    }
     return alert;
   }
 

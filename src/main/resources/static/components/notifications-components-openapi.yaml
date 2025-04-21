@@ -1,0 +1,61 @@
+Notification:
+  type: object
+  properties:
+    id:
+      type: integer
+      readOnly: true
+    userId:
+      type: integer
+    alertId:
+      type: integer
+    createdAt:
+      type: string
+      format: date-time
+      readOnly: true
+    type:
+      type: string
+      enum: [EMAIL, SMS]
+  required:
+    - userId
+    - alertId
+    - type
+
+EmailNotification:
+  type: object
+  properties:
+    notificationId:
+      type: integer
+    status:
+      type: string
+      enum: [PENDING, SENT, FAILED]
+    to:
+      type: string
+      format: email
+    subject:
+      type: string
+    body:
+      type: string
+  required:
+    - notificationId
+    - status
+    - to
+    - subject
+    - body
+
+SmsNotification:
+  type: object
+  properties:
+    notificationId:
+      type: integer
+    status:
+      type: string
+      enum: [PENDING, SENT, FAILED]
+    phoneNumber:
+      type: string
+    text:
+      type: string
+  required:
+    - notificationId
+    - status
+    - phoneNumber
+    - text

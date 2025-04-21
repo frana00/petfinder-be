@@ -1,0 +1,136 @@
+alerts:
+  get:
+    operationId: listAlerts
+    tags:
+      - Alerts
+    summary: List all alerts
+    parameters:
+      - name: type
+        in: query
+        schema:
+          type: string
+          enum: [LOST, FOUND]
+      - name: status
+        in: query
+        schema:
+          type: string
+          enum: [ACTIVE, RESOLVED]
+      - name: countryId
+        in: query
+        schema:
+          type: integer
+      - name: cp
+        in: query
+        schema:
+          type: string
+    responses:
+      '200':
+        description: List of alerts
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../components/alert-components-openapi.yaml#/Alert'
+  post:
+    operationId: createAlert
+    tags:
+      - Alerts
+    summary: Create a new alert
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/alert-components-openapi.yaml#/CreateAlertRequest'
+    responses:
+      '201':
+        description: Alert created
+        content:
+          application/json:
+            schema:
+              $ref: '../components/alert-components-openapi.yaml#/CreateAlertResponse'
+alerts_id:
+  parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+  get:
+    operationId: getAlertById
+    tags:
+      - Alerts
+    summary: Get an alert by ID
+    responses:
+      '200':
+        description: Alert found
+        content:
+          application/json:
+            schema:
+              $ref: '../components/alert-components-openapi.yaml#/Alert'
+  put:
+    operationId: updateAlert
+    tags:
+      - Alerts
+    summary: Update an alert
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/alert-components-openapi.yaml#/Alert'
+    responses:
+      '200':
+        description: Alert updated
+        content:
+          application/json:
+            schema:
+              $ref: '../components/alert-components-openapi.yaml#/Alert'
+  delete:
+    operationId: deleteAlert
+    tags:
+      - Alerts
+    summary: Delete an alert
+    responses:
+      '204':
+        description: Alert deleted
+alerts_id_photos:
+  parameters:
+    - name: alertId
+      in: path
+      required: true
+      schema:
+        type: integer
+  get:
+    operationId: listAlertPhotos
+    tags:
+      - Photos
+    summary: List photos for an alert
+    responses:
+      '200':
+        description: List of photos
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../components/photo-components-openapi.yaml#/Photo'
+  post:
+    operationId: addPhotoToAlert
+    tags:
+      - Photos
+    summary: Add a photo to an alert
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/photo-components-openapi.yaml#/Photo'
+    responses:
+      '201':
+        description: Photo added
+        content:
+          application/json:
+            schema:
+              $ref: '../components/photo-components-openapi.yaml#/Photo'
