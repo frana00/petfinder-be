@@ -7,10 +7,10 @@ import com.petsignal.photos.entity.Photo;
 import com.petsignal.photos.repository.PhotoRepository;
 import com.petsignal.s3bucket.S3BucketService;
 import io.micrometer.common.util.StringUtils;
-import io.swagger.models.HttpMethod;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 
-import static io.swagger.models.HttpMethod.PUT;
+import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.http.MediaType.IMAGE_PNG;
 

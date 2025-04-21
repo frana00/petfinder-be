@@ -4,15 +4,14 @@ import com.petsignal.alert.dto.AlertRequest;
 import com.petsignal.alert.dto.AlertResponse;
 import com.petsignal.alert.entity.Alert;
 import com.petsignal.alert.mapper.AlertMapper;
+import com.petsignal.alert.mapper.AlertResponseBuilder;
 import com.petsignal.alert.repository.AlertRepository;
 import com.petsignal.exception.ResourceNotFoundException;
-import com.petsignal.photos.dto.PhotoUrl;
 import com.petsignal.photos.entity.Photo;
 import com.petsignal.photos.service.PhotoService;
 import com.petsignal.postcodes.entity.PostCode;
 import com.petsignal.postcodes.service.PostCodeService;
 import com.petsignal.user.service.UserService;
-import io.swagger.models.HttpMethod;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,8 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static io.swagger.models.HttpMethod.GET;
-import static io.swagger.models.HttpMethod.PUT;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.PUT;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +33,13 @@ public class AlertService {
   private final AlertMapper alertMapper;
   private final PostCodeService postCodeService;
   private final PhotoService photoService;
+  private final AlertResponseBuilder alertBuilder;
 
   @Transactional(readOnly = true)
   public List<AlertResponse> getAllAlerts() {
+
     return alertRepository.findAll().stream()
-        .map(alert -> buildAlertResponseWithPresignedUrls(alert, GET))
+        .map(alert -> alertBuilder.build(alert, GET))
         .toList();
   }
 
@@ -45,7 +47,7 @@ public class AlertService {
   public AlertResponse getAlertById(Long id) {
     Alert alert = alertRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(ALERT, "id", id));
-    return buildAlertResponseWithPresignedUrls(alert, GET);
+    return alertBuilder.build(alert, GET);
   }
 
   @Transactional
@@ -59,7 +61,7 @@ public class AlertService {
 
     Alert savedAlert = alertRepository.save(alert);
 
-    return buildAlertResponseWithPresignedUrls(savedAlert, PUT);
+    return alertBuilder.build(savedAlert, PUT);
   }
 
   @Transactional
@@ -69,7 +71,7 @@ public class AlertService {
 
     alertMapper.updateEntityFromRequest(request, alert);
     Alert updatedAlert = alertRepository.save(alert);
-    return buildAlertResponseWithPresignedUrls(updatedAlert, GET);
+    return alertBuilder.build(updatedAlert, GET);
   }
 
   @Transactional
@@ -93,16 +95,5 @@ public class AlertService {
       alert.setPhotos(photos);
     }
     return alert;
-  }
-
-  private AlertResponse buildAlertResponseWithPresignedUrls(Alert alert, HttpMethod method) {
-    AlertResponse response = alertMapper.toResponse(alert);
-
-    List<PhotoUrl> presignedUrls = alert.getPhotos().stream()
-        .map(photo -> photoService.createPhotoPresignedUrl(photo.getS3ObjectKey(), method))
-        .toList();
-
-    response.setPhotoUrls(presignedUrls);
-    return response;
   }
 } 
