@@ -5,13 +5,14 @@ import com.petsignal.alert.dto.AlertResponse;
 import com.petsignal.alert.entity.Alert;
 import com.petsignal.alert.mapper.AlertMapper;
 import com.petsignal.alert.repository.AlertRepository;
+import com.petsignal.exception.ResourceNotFoundException;
 import com.petsignal.photos.dto.PhotoUrl;
 import com.petsignal.photos.entity.Photo;
 import com.petsignal.photos.service.PhotoService;
 import com.petsignal.postcodes.entity.PostCode;
 import com.petsignal.postcodes.service.PostCodeService;
 import com.petsignal.user.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
+import io.swagger.models.HttpMethod;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,23 +20,38 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static io.swagger.models.HttpMethod.GET;
+import static io.swagger.models.HttpMethod.PUT;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AlertService {
+  private static final String ALERT = "Alert";
   private final AlertRepository alertRepository;
   private final UserService userService;
   private final AlertMapper alertMapper;
   private final PostCodeService postCodeService;
   private final PhotoService photoService;
 
+  @Transactional(readOnly = true)
+  public List<AlertResponse> getAllAlerts() {
+    return alertRepository.findAll().stream()
+        .map(alert -> buildAlertResponseWithPresignedUrls(alert, GET))
+        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public AlertResponse getAlertById(Long id) {
+    Alert alert = alertRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(ALERT, "id", id));
+    return buildAlertResponseWithPresignedUrls(alert, GET);
+  }
+
   @Transactional
   public AlertResponse createAlert(AlertRequest request) {
-    Long userId = request.getUserId();
-    // Confirm user exists
-    if (userService.findById(userId) == null) {
-      throw new EntityNotFoundException("User not found with id: " + userId);
-    }
+    // Validate user exists
+    userService.findById(request.getUserId());
 
     PostCode postCode = postCodeService.findByPostCodeAndCountry(request.getPostalCode(), request.getCountryCode());
 
@@ -43,8 +59,25 @@ public class AlertService {
 
     Alert savedAlert = alertRepository.save(alert);
 
-    return buildAlertResponseWithPresignedUrls(savedAlert);
+    return buildAlertResponseWithPresignedUrls(savedAlert, PUT);
+  }
 
+  @Transactional
+  public AlertResponse updateAlert(Long id, AlertRequest request) {
+    Alert alert = alertRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(ALERT, "id", id));
+
+    alertMapper.updateEntityFromRequest(request, alert);
+    Alert updatedAlert = alertRepository.save(alert);
+    return buildAlertResponseWithPresignedUrls(updatedAlert, GET);
+  }
+
+  @Transactional
+  public void deleteAlert(Long id) {
+    if (!alertRepository.existsById(id)) {
+      throw new ResourceNotFoundException(ALERT, "id", id);
+    }
+    alertRepository.deleteById(id);
   }
 
   private Alert buildAlertAndPhotosEntities(AlertRequest request, PostCode postCode) {
@@ -62,16 +95,14 @@ public class AlertService {
     return alert;
   }
 
-
-  private AlertResponse buildAlertResponseWithPresignedUrls(Alert alert) {
+  private AlertResponse buildAlertResponseWithPresignedUrls(Alert alert, HttpMethod method) {
     AlertResponse response = alertMapper.toResponse(alert);
 
     List<PhotoUrl> presignedUrls = alert.getPhotos().stream()
-        .map(photo -> photoService.createPhotoPresignedUrl(photo.getS3ObjectKey()))
+        .map(photo -> photoService.createPhotoPresignedUrl(photo.getS3ObjectKey(), method))
         .toList();
 
     response.setPhotoUrls(presignedUrls);
     return response;
   }
-
 } 

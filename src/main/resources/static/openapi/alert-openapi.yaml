@@ -52,17 +52,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/CreateAlertResponse'
   /alerts/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
     get:
       operationId: getAlertById
       tags:
         - Alerts
       summary: Get an alert by ID
+      parameters:
+        - $ref: '#/components/parameters/AlertId'
       responses:
         '200':
           description: Alert found
@@ -75,6 +71,8 @@ paths:
       tags:
         - Alerts
       summary: Update an alert
+      parameters:
+        - $ref: '#/components/parameters/AlertId'
       requestBody:
         required: true
         content:
@@ -93,6 +91,8 @@ paths:
       tags:
         - Alerts
       summary: Delete an alert
+      parameters:
+        - $ref: '#/components/parameters/AlertId'
       responses:
         '204':
           description: Alert deleted
@@ -240,3 +240,10 @@ components:
       required:
         - s3ObjectKey
         - presignedUrl
+  parameters:
+    AlertId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer

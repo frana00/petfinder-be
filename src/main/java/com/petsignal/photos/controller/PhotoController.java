@@ -12,9 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 
 @RestController
-@RequestMapping("/photos/s3")
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/photos/s3")
 public class PhotoController {
   private final PhotoService photoService;
 
@@ -41,3 +41,4 @@ public class PhotoController {
   }
 
 }
+

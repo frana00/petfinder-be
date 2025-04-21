@@ -7,6 +7,7 @@ import com.petsignal.photos.entity.Photo;
 import com.petsignal.photos.repository.PhotoRepository;
 import com.petsignal.s3bucket.S3BucketService;
 import io.micrometer.common.util.StringUtils;
+import io.swagger.models.HttpMethod;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 
+import static io.swagger.models.HttpMethod.PUT;
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.http.MediaType.IMAGE_PNG;
 
@@ -46,11 +48,18 @@ public class PhotoService {
     return photoEntity;
   }
 
-  public PhotoUrl createPhotoPresignedUrl(String s3ObjectKey) {
-    return new PhotoUrl(
-        s3ObjectKey,
-        s3BucketService.createPutPresignedUrl(s3ObjectKey, getMediaType(s3ObjectKey))
-    );
+  public PhotoUrl createPhotoPresignedUrl(String s3ObjectKey, HttpMethod method) {
+    if (PUT.equals(method)) {
+      return new PhotoUrl(
+          s3ObjectKey,
+          s3BucketService.createPutPresignedUrl(s3ObjectKey, getMediaType(s3ObjectKey))
+      );
+    } else {
+      return new PhotoUrl(
+          s3ObjectKey,
+          s3BucketService.createGetPresignedUrl(s3ObjectKey, getMediaType(s3ObjectKey))
+      );
+    }
   }
 
   public String uploadPhotoToS3(String s3ObjectKey, String presignedUrl, MultipartFile file) {

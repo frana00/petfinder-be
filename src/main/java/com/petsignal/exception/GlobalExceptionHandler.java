@@ -1,6 +1,5 @@
 package com.petsignal.exception;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -76,9 +75,9 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse, BAD_REQUEST);
   }
 
-  @ExceptionHandler(EntityNotFoundException.class)
+  @ExceptionHandler(ResourceNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleResourceNotFound(
-      EntityNotFoundException ex,
+      ResourceNotFoundException ex,
       HttpServletRequest request) {
 
     ErrorResponse errorResponse = new ErrorResponse(
