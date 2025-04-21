@@ -1,0 +1,77 @@
+paths:
+  /photos/s3:
+    get:
+      operationId: getPhotoFromS3
+      tags:
+        - Photos
+      summary: retrieve a photo from s3
+      parameters:
+        - name: objectKey
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: presignedUrl
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uri
+      responses:
+        '200':
+          description: Photo correctly retrieve
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+    put:
+      operationId: uploadToS3
+      tags:
+        - Photos
+      summary: Upload photo to s3
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                objectKey:
+                  type: string
+                  required: true
+                presignedUrl:
+                  type: string
+                  format: uri
+                  required: true
+                file:
+                  type: string
+                  format: binary
+                  required: true
+      responses:
+        '201':
+          description: Upload successful
+components:
+  schemas:
+    BadRequest:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: datetime
+        status:
+          type: string
+        error:
+          type: string
+        path:
+          type: string

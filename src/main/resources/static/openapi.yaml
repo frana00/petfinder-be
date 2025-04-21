@@ -25,35 +25,35 @@ security:
 
 paths:
   /alerts:
-    $ref: './paths/alert-paths-openapi.yaml#/alerts'
+    $ref: './openapi/alert-openapi.yaml#/paths/~1alerts'
   /alerts/{id}:
-    $ref: './paths/alert-paths-openapi.yaml#/alerts_id'
+    $ref: './openapi/alert-openapi.yaml#/paths/~1alerts~1{id}'
   /alerts/{alertId}/photos:
-    $ref: './paths/alert-paths-openapi.yaml#/alerts_id_photos'
+    $ref: './openapi/alert-openapi.yaml#/paths/~1alerts~1{id}~1photos'
 
   /photos/s3:
-    $ref: './paths/s3-photo-paths-openapi.yaml#/photos_s3'
+    $ref: './openapi/s3-photo-openapi.yaml#/paths/~1photos~1s3'
 
   /users:
-    $ref: './paths/users-paths.yaml#/users'
+    $ref: './openapi/users-openapi.yaml#/paths/~1users'
   /users/{id}:
-    $ref: './paths/users-paths.yaml#/users_id'
+    $ref: './openapi/users-openapi.yaml#/paths/~1users~1{id}'
 
   /subscriptions:
-    $ref: './paths/subscriptions-paths-openapi.yaml#/subscriptions'
+    $ref: './openapi/subscriptions-openapi.yaml#/paths/~1subscriptions'
   /subscriptions/{id}:
-    $ref: './paths/subscriptions-paths-openapi.yaml#/subscriptions_id'
+    $ref: './openapi/subscriptions-openapi.yaml#/paths/~1subscriptions~1{id}'
 
   /notifications:
-    $ref: './paths/notifications-paths-openapi.yaml#/notifications'
+    $ref: './openapi/notifications-openapi.yaml#/paths/~1notifications'
   /notifications/{id}:
-    $ref: './paths/notifications-paths-openapi.yaml#/notifications_id'
+    $ref: './openapi/notifications-openapi.yaml#/paths/~1notifications~1{id}'
 
   /email-notifications:
-    $ref: './paths/notifications-paths-openapi.yaml#/email-notifications'
+    $ref: './openapi/notifications-openapi.yaml#/paths/~1email-notifications'
 
   /sms-notifications:
-    $ref: './paths/notifications-paths-openapi.yaml#/sms-notifications'
+    $ref: './openapi/notifications-openapi.yaml#/paths/~1sms-notifications'
 
 components:
   securitySchemes:

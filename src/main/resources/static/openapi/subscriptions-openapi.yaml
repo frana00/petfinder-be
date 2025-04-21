@@ -1,0 +1,110 @@
+paths:
+  /subscriptions:
+    get:
+      operationId: listSubscriptions
+      tags:
+        - Subscriptions
+      summary: List all subscriptions
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: integer
+        - name: countryId
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of subscriptions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Subscription'
+    post:
+      operationId: createSubscription
+      tags:
+        - Subscriptions
+      summary: Create a new subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+      responses:
+        '201':
+          description: Subscription created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+  /subscriptions/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: getSubscriptionById
+      tags:
+        - Subscriptions
+      summary: Get a subscription by ID
+      responses:
+        '200':
+          description: Subscription found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+    put:
+      operationId: updateSubscription
+      tags:
+        - Subscriptions
+      summary: Update a subscription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Subscription'
+      responses:
+        '200':
+          description: Subscription updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+    delete:
+      operationId: deleteSubscription
+      tags:
+        - Subscriptions
+      summary: Delete a subscription
+      responses:
+        '204':
+          description: Subscription deleted
+components:
+  schemas:
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        userId:
+          type: integer
+        cp:
+          type: string
+        countryId:
+          type: integer
+        alertType:
+          type: string
+          enum: [ LOST, FOUND ]
+      required:
+        - userId
+        - cp
+        - countryId
+        - alertType

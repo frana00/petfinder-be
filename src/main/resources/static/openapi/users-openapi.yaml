@@ -1,0 +1,120 @@
+paths:
+  /users:
+    get:
+      operationId: listUsers
+      tags:
+        - Users
+      summary: List all users
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      operationId: createUser
+      tags:
+        - Users
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: getUserById
+      tags:
+        - Users
+      summary: Get a user by ID
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      operationId: updateUser
+      tags:
+        - Users
+      summary: Update a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      operationId: deleteUser
+      tags:
+        - Users
+      summary: Delete a user
+      responses:
+        '204':
+          description: User deleted
+components:
+  schemas:
+    User:
+      type: object
+      example:
+        id: 1
+        username: "hannah_bannanah"
+        email: "hannah@bannanah.com"
+        subscriptionEmail: "bannanah@notifications.com"
+        phoneNumber: "+34123456789"
+        role: "USER"
+        createdAt: "2024-03-15T14:30:00Z"
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          maxLength: 100
+        subscriptionEmail:
+          type: string
+          format: email
+          maxLength: 100
+        phoneNumber:
+          type: string
+          maxLength: 20
+        role:
+          type: string
+          enum: [ ADMIN, USER ]
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - username
+        - email
+        - role

@@ -1,0 +1,242 @@
+paths:
+  /alerts:
+    get:
+      operationId: listAlerts
+      tags:
+        - Alerts
+      summary: List all alerts
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [LOST, FOUND]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [ACTIVE, RESOLVED]
+        - name: countryId
+          in: query
+          schema:
+            type: integer
+        - name: cp
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alert'
+    post:
+      operationId: createAlert
+      tags:
+        - Alerts
+      summary: Create a new alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAlertRequest'
+      responses:
+        '201':
+          description: Alert created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAlertResponse'
+  /alerts/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: getAlertById
+      tags:
+        - Alerts
+      summary: Get an alert by ID
+      responses:
+        '200':
+          description: Alert found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+    put:
+      operationId: updateAlert
+      tags:
+        - Alerts
+      summary: Update an alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Alert'
+      responses:
+        '200':
+          description: Alert updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alert'
+    delete:
+      operationId: deleteAlert
+      tags:
+        - Alerts
+      summary: Delete an alert
+      responses:
+        '204':
+          description: Alert deleted
+  /alerts/{id}/photos:
+    parameters:
+      - name: alertId
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: listAlertPhotos
+      tags:
+        - Photos
+      summary: List photos for an alert
+      responses:
+        '200':
+          description: List of photos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Photo'
+    post:
+      operationId: addPhotoToAlert
+      tags:
+        - Photos
+      summary: Add a photo to an alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Photo'
+      responses:
+        '201':
+          description: Photo added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Photo'
+
+components:
+  schemas:
+    Alert:
+      type: object
+      example:
+        userId: 0
+        type: SEEN
+        chipNumber: "9999342343214322"
+        status: ACTIVE
+        sex: UNKNOWN
+        date: "2025-04-17T16:40:27.914Z"
+        title: "Found a cutie pie"
+        description: "Seen at the beach, swimming"
+        breed: "mixed"
+        postalCode: "04001"
+        countryCode: ES
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        userId:
+          type: integer
+        type:
+          type: string
+          enum: [ LOST, SEEN ]
+        status:
+          type: string
+          enum: [ ACTIVE, RESOLVED ]
+        chipNumber:
+          type: string
+          description: Chip number of the pet
+        sex:
+          type: string
+          enum: [ MALE, FEMALE, UNKNOWN ]
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
+        date:
+          type: string
+          format: date-time
+        description:
+          type: string
+        breed:
+          type: string
+        postalCode:
+          type: string
+        countryCode:
+          type: string
+      required:
+        - userId
+        - type
+        - date
+        - postalCode
+        - countryCode
+        - title
+    CreateAlertRequest:
+      allOf:
+        - $ref: '#/components/schemas/Alert'
+        - type: object
+          properties:
+            photoFilenames:
+              type: array
+              example: [ "image.jpg" ]
+              items:
+                type: string
+    CreateAlertResponse:
+      allOf:
+        - $ref: '#/components/schemas/Alert'
+        - type: object
+          properties:
+            photoUrls:
+              type: array
+              items:
+                $ref: '#/components/schemas/PhotoUrl'
+    Photo:
+      type: object
+      properties:
+        id:
+          type: integer
+        alertId:
+          type: integer
+        s3objectKey:
+          type: string
+      required:
+        - alertId
+        - url
+    PhotoUrl:
+      type: object
+      properties:
+        s3ObjectKey:
+          type: string
+          example: "originalFilename__abc123.jpg"
+        presignedUrl:
+          type: string
+          format: uri
+          example: "https:s3.region.aws.com/bucket/originalFilename__abc123.jpg"
+      required:
+        - s3ObjectKey
+        - presignedUrl

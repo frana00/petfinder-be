@@ -1,0 +1,208 @@
+paths:
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags:
+        - Notifications
+      summary: List all notifications
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: integer
+        - name: alertId
+          in: query
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [EMAIL, SMS]
+      responses:
+        '200':
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+    post:
+      operationId: createNotification
+      tags:
+        - Notifications
+      summary: Create a new notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      responses:
+        '201':
+          description: Notification created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+  /notifications/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: getNotificationById
+      tags:
+        - Notifications
+      summary: Get a notification by ID
+      responses:
+        '200':
+          description: Notification found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+  /email-notifications:
+    get:
+      operationId: listEmailNotifications
+      tags:
+        - Notifications
+      summary: List all email notifications
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, SENT, FAILED]
+      responses:
+        '200':
+          description: List of email notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmailNotification'
+    post:
+      operationId: createEmailNotification
+      tags:
+        - Notifications
+      summary: Create a new email notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailNotification'
+      responses:
+        '201':
+          description: Email notification created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailNotification'
+  /sms-notifications:
+    get:
+      operationId: listSmsNotifications
+      tags:
+        - Notifications
+      summary: List all SMS notifications
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [PENDING, SENT, FAILED]
+      responses:
+        '200':
+          description: List of SMS notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SmsNotification'
+    post:
+      operationId: createSmsNotification
+      tags:
+        - Notifications
+      summary: Create a new SMS notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmsNotification'
+      responses:
+        '201':
+          description: SMS notification created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmsNotification'
+components:
+  schemas:
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        userId:
+          type: integer
+        alertId:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+        type:
+          type: string
+          enum: [ EMAIL, SMS ]
+      required:
+        - userId
+        - alertId
+        - type
+
+    EmailNotification:
+      type: object
+      properties:
+        notificationId:
+          type: integer
+        status:
+          type: string
+          enum: [ PENDING, SENT, FAILED ]
+        to:
+          type: string
+          format: email
+        subject:
+          type: string
+        body:
+          type: string
+      required:
+        - notificationId
+        - status
+        - to
+        - subject
+        - body
+
+    SmsNotification:
+      type: object
+      properties:
+        notificationId:
+          type: integer
+        status:
+          type: string
+          enum: [ PENDING, SENT, FAILED ]
+        phoneNumber:
+          type: string
+        text:
+          type: string
+      required:
+        - notificationId
+        - status
+        - phoneNumber
+        - text
