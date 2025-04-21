@@ -10,20 +10,46 @@ paths:
           in: query
           schema:
             type: string
-            enum: [LOST, FOUND]
+            enum: [ LOST, SEEN ]
         - name: status
           in: query
           schema:
             type: string
-            enum: [ACTIVE, RESOLVED]
-        - name: countryId
+            enum: [ ACTIVE, RESOLVED ]
+        - name: countryCode
           in: query
           schema:
             type: integer
-        - name: cp
+        - name: postalCode
           in: query
           schema:
             type: string
+        - name: page
+          in: query
+          description: Page number (zero-based)
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: size
+          in: query
+          description: Number of results per page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 20
+        - name: sort
+          in: query
+          description: Sorting criteria in the format `property,(asc|desc)`. You can specify multiple sort parameters.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+            example:
+              - createdAt,desc
       responses:
         '200':
           description: List of alerts

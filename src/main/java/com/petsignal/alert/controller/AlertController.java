@@ -2,14 +2,18 @@ package com.petsignal.alert.controller;
 
 import com.petsignal.alert.dto.AlertRequest;
 import com.petsignal.alert.dto.AlertResponse;
+import com.petsignal.alert.entity.AlertStatus;
+import com.petsignal.alert.entity.AlertType;
 import com.petsignal.alert.service.AlertService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/alerts")
@@ -19,8 +23,14 @@ public class AlertController {
   private final AlertService alertService;
 
   @GetMapping
-  public ResponseEntity<List<AlertResponse>> getAllAlerts() {
-    List<AlertResponse> alerts = alertService.getAllAlerts();
+  public ResponseEntity<Page<AlertResponse>> getAllAlerts(
+      @RequestParam(required = false) AlertType type,
+      @RequestParam(required = false) AlertStatus status,
+      @RequestParam(required = false) String countryCode,
+      @RequestParam(required = false) String postalCode,
+      @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+  ) {
+    Page<AlertResponse> alerts = alertService.getAllAlerts(type, status, countryCode, postalCode, pageable);
     return ResponseEntity.ok(alerts);
   }
 

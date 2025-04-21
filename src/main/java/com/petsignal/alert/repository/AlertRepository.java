@@ -1,9 +1,31 @@
 package com.petsignal.alert.repository;
 
 import com.petsignal.alert.entity.Alert;
+import com.petsignal.alert.entity.AlertStatus;
+import com.petsignal.alert.entity.AlertType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 
 @Repository
 public interface AlertRepository extends JpaRepository<Alert, Long> {
+
+  @Query("""
+        SELECT a FROM Alert a
+        WHERE (:type IS NULL OR a.type = :type)
+          AND (:status IS NULL OR a.status = :status)
+          AND (:countryCode IS NULL OR a.postCode.countryCode = :countryCode)
+          AND (:postalCode IS NULL OR a.postCode.postalCode = :postalCode)
+      """)
+  Page<Alert> findFilteredAlerts(
+      @Param("type") AlertType type,
+      @Param("status") AlertStatus status,
+      @Param("countryCode") String countryCode,
+      @Param("postalCode") String postalCode,
+      Pageable pageable
+  );
 } 

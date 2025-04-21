@@ -3,6 +3,8 @@ package com.petsignal.alert.service;
 import com.petsignal.alert.dto.AlertRequest;
 import com.petsignal.alert.dto.AlertResponse;
 import com.petsignal.alert.entity.Alert;
+import com.petsignal.alert.entity.AlertStatus;
+import com.petsignal.alert.entity.AlertType;
 import com.petsignal.alert.mapper.AlertMapper;
 import com.petsignal.alert.mapper.AlertResponseBuilder;
 import com.petsignal.alert.repository.AlertRepository;
@@ -14,6 +16,8 @@ import com.petsignal.postcodes.service.PostCodeService;
 import com.petsignal.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,11 +40,11 @@ public class AlertService {
   private final AlertResponseBuilder alertBuilder;
 
   @Transactional(readOnly = true)
-  public List<AlertResponse> getAllAlerts() {
+  public Page<AlertResponse> getAllAlerts(
+      AlertType type, AlertStatus status, String countryCode, String postalCode, Pageable pageable) {
 
-    return alertRepository.findAll().stream()
-        .map(alert -> alertBuilder.build(alert, GET))
-        .toList();
+    return alertRepository.findFilteredAlerts(type, status, countryCode, postalCode, pageable)
+        .map(alert -> alertBuilder.build(alert, GET));
   }
 
   @Transactional(readOnly = true)
