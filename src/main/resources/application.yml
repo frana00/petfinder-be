@@ -74,4 +74,4 @@ aws:
 # Scheduled jobs configuration
 scheduling:
   delete-photos:
-    cron: "0 48 17 * * *"
+    cron: "0 0 3 * * *"
