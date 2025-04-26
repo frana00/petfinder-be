@@ -248,11 +248,11 @@ components:
           type: integer
         alertId:
           type: integer
+          readonly: true
         s3objectKey:
           type: string
       required:
         - alertId
-        - url
     PhotoUrl:
       type: object
       properties:

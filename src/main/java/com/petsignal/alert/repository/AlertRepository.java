@@ -10,6 +10,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 
 @Repository
 public interface AlertRepository extends JpaRepository<Alert, Long> {
@@ -28,4 +31,15 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
       @Param("postalCode") String postalCode,
       Pageable pageable
   );
+
+  @Query("""
+          SELECT a
+          FROM Alert a
+          JOIN FETCH a.photos
+          WHERE a.status = :status
+            AND a.updatedAt BETWEEN :from AND :to
+      """)
+  List<Alert> findWithPhotosByStatusAndUpdatedAtBetween(@Param("status") AlertStatus status,
+                                                        @Param("from") LocalDateTime from,
+                                                        @Param("to") LocalDateTime to);
 } 

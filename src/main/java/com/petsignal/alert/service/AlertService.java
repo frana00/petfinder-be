@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.springframework.http.HttpMethod.GET;
@@ -80,10 +81,19 @@ public class AlertService {
 
   @Transactional
   public void deleteAlert(Long id) {
-    if (!alertRepository.existsById(id)) {
-      throw new ResourceNotFoundException(ALERT, "id", id);
-    }
+    Alert alert = alertRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALERT, "id", id));
+
+    // delete alert from DB
     alertRepository.deleteById(id);
+
+    // delete photos from s3
+    photoService.deletePhotos(alert.getPhotos());
+
+  }
+
+  @Transactional
+  public List<Alert> getLatestResolvedAlerts(LocalDateTime from, LocalDateTime to) {
+    return alertRepository.findWithPhotosByStatusAndUpdatedAtBetween(AlertStatus.RESOLVED, from, to);
   }
 
   private Alert buildAlertAndPhotosEntities(AlertRequest request, PostCode postCode) {

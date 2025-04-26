@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.HttpMethod.PUT;
@@ -103,5 +104,15 @@ public class PhotoService {
       extension = filename.substring(extensionStart + 1);
     }
     return extension;
+  }
+
+  public void deletePhotos(List<Photo> photos) {
+    photos.stream()
+        .map(Photo::getS3ObjectKey)
+        .forEach(key -> s3BucketService.deleteObjectFromBucket(key)
+            .exceptionally(ex -> {
+              log.error("Failed to delete {}", key);
+              return null;
+            }));
   }
 }

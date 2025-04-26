@@ -70,3 +70,8 @@ aws:
   s3:
     region: ${AWS_REGION:us-east-1}
     bucket-name: ${AWS_S3_BUCKET_NAME}
+
+# Scheduled jobs configuration
+scheduling:
+  delete-photos:
+    cron: "0 48 17 * * *"

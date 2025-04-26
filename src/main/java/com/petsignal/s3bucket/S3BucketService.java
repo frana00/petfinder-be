@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.core.internal.sync.FileContentStreamProvider;
 import software.amazon.awssdk.http.*;
 import software.amazon.awssdk.http.apache.ApacheHttpClient;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
@@ -33,6 +36,7 @@ public class S3BucketService {
   private static final String DOWNLOAD_ERROR_MESSAGE = "Could not retrieve file from S3";
 
   private final S3Presigner s3Presigner;
+  private final S3AsyncClient s3AsyncClient;
 
   @Value("${aws.s3.bucket-name}")
   private String bucketName;
@@ -133,5 +137,15 @@ public class S3BucketService {
       log.error(e.getMessage(), e);
     }
     return byteArrayOutputStream.toByteArray();
+  }
+
+  public CompletableFuture<Void> deleteObjectFromBucket(String key) {
+    DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+        .bucket(bucketName)
+        .key(key)
+        .build();
+
+    return s3AsyncClient.deleteObject(deleteObjectRequest)
+        .thenAccept(response -> log.info("{} was deleted", key));
   }
 } 
