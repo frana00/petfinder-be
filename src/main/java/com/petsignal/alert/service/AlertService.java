@@ -32,7 +32,7 @@ import static org.springframework.http.HttpMethod.PUT;
 @RequiredArgsConstructor
 @Slf4j
 public class AlertService {
-  private static final String ALERT = "Alert";
+  public static final String ALERT = "Alert";
   private final AlertRepository alertRepository;
   private final UserService userService;
   private final AlertMapper alertMapper;
@@ -49,10 +49,16 @@ public class AlertService {
   }
 
   @Transactional(readOnly = true)
-  public AlertResponse getAlertById(Long id) {
+  public AlertResponse findAlertById(Long id) {
     Alert alert = alertRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(ALERT, "id", id));
     return alertBuilder.build(alert, GET);
+  }
+
+  @Transactional(readOnly = true)
+  public Alert findAlertEntityById(Long id) {
+    return alertRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(ALERT, "id", id));
   }
 
   @Transactional
@@ -110,4 +116,5 @@ public class AlertService {
     }
     return alert;
   }
-} 
+
+}

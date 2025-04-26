@@ -123,45 +123,47 @@ paths:
         '204':
           description: Alert deleted
   /alerts/{id}/photos:
-    parameters:
-      - name: alertId
-        in: path
-        required: true
-        schema:
-          type: integer
-    get:
-      operationId: listAlertPhotos
-      tags:
-        - Photos
-      summary: List photos for an alert
-      responses:
-        '200':
-          description: List of photos
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Photo'
     post:
-      operationId: addPhotoToAlert
+      operationId: addPhotosToAlert
       tags:
         - Photos
-      summary: Add a photo to an alert
+      parameters:
+        - $ref: '#/components/parameters/AlertId'
+      summary: Add photos to an alert
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Photo'
+              type: object
+              properties:
+                photoFilenames:
+                  $ref: '#/components/schemas/PhotoFileNames'
       responses:
         '201':
-          description: Photo added
+          description: Photos added
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Photo'
-
+                type: array
+                items:
+                  $ref: '#/components/schemas/PhotoUrl'
+  /alerts/{id}/photos/{s3ObjectKey}:
+    delete:
+      operationId: deletePhotoFromAlert
+      tags:
+        - Photos
+      summary: Delete a photo from an Alert
+      parameters:
+        - $ref: '#/components/parameters/AlertId'
+        - name: s3ObjectKey
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '204':
+          description: Alert deleted
 components:
   schemas:
     Alert:
@@ -225,13 +227,7 @@ components:
     CreateAlertRequest:
       allOf:
         - $ref: '#/components/schemas/Alert'
-        - type: object
-          properties:
-            photoFilenames:
-              type: array
-              example: [ "image.jpg" ]
-              items:
-                type: string
+        - $ref: '#/components/schemas/PhotoFileNames'
     CreateAlertResponse:
       allOf:
         - $ref: '#/components/schemas/Alert'
@@ -246,13 +242,14 @@ components:
       properties:
         id:
           type: integer
+          readonly: true
         alertId:
           type: integer
           readonly: true
         s3objectKey:
           type: string
       required:
-        - alertId
+        - s3objectKey
     PhotoUrl:
       type: object
       properties:
@@ -266,6 +263,11 @@ components:
       required:
         - s3ObjectKey
         - presignedUrl
+    PhotoFileNames:
+      type: array
+      example: [ "image.jpg" ]
+      items:
+        type: string
   parameters:
     AlertId:
       name: id

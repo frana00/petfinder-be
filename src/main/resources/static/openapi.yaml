@@ -21,16 +21,17 @@ servers:
     description: Local development server
 
 security:
-  - bearerAuth: []
+  - bearerAuth: [ ]
 
 paths:
   /alerts:
     $ref: './openapi/alert-openapi.yaml#/paths/~1alerts'
   /alerts/{id}:
     $ref: './openapi/alert-openapi.yaml#/paths/~1alerts~1{id}'
-  /alerts/{alertId}/photos:
+  /alerts/{id}/photos:
     $ref: './openapi/alert-openapi.yaml#/paths/~1alerts~1{id}~1photos'
-
+  /alerts/{id}/photos/{s3ObjectKey}:
+    $ref: './openapi/alert-openapi.yaml#/paths/~1alerts~1{id}~1photos~1{s3ObjectKey}'
   /photos/s3:
     $ref: './openapi/s3-photo-openapi.yaml#/paths/~1photos~1s3'
 
