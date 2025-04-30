@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: petsignal-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpwd # update with your secure password
+      MYSQL_DATABASE: petsignaldb
+      MYSQL_USER: petsignaluser
+      MYSQL_PASSWORD: pspwd # update with your secure password
+    volumes:
+      - petsignal_mysql_data:/var/lib/mysql
+      - ./ddl.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - '3306:3306'
+
+volumes:
+  petsignal_mysql_data:
+    driver: local

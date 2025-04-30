@@ -3,13 +3,12 @@
 A Spring Boot application for managing pet alerts and notifications.
 
 ## Technologies
-
 - Java 21
 - Spring Boot 3.2.3
 - Spring Data JPA
 - MySQL
 - Maven
-- Lombok
+- Docker
 - OpenAPI/Swagger
 
 ## Prerequisites
@@ -17,6 +16,7 @@ A Spring Boot application for managing pet alerts and notifications.
 - Java 21 or higher
 - Maven 3.6 or higher
 - MySQL 8.0 or higher
+- Docker 20.10 or higher
 
 ## Setup
 
@@ -26,11 +26,20 @@ A Spring Boot application for managing pet alerts and notifications.
    cd petsignal-be
    ```
 
-2. Create a MySQL database:
+2. Start the MySQL Docker container
+   - Update `docker-compose.yml` with your credentials
+   - Start docker container
    ```
-   CREATE DATABASE petsignal;
+   cd database;
+   docker compose up -d;
+   cd ..
    ```
-
+   - After shutting down the application, you can stop the container
+   ```
+   cd database;
+   docker compose down;
+   cd ..
+   ```
 3. Configure the application:
     - Update `application.yml` with your database credentials
     - Update `application.yml` with your AWS credentials and configuration
@@ -68,10 +77,9 @@ src/main/java/com/petsignal/
 
 ## Features
 - CRUD operations for alerts, photos, users, and subscriptions
-- Email and SMS notifications
+- Email notifications
 - OpenAPI documentation
 
 
 ## License
-
 This project is licensed under the MIT License - see the LICENSE file for details.

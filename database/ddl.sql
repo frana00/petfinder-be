@@ -92,15 +92,6 @@ CREATE TABLE email_notifications
     FOREIGN KEY (notification_id) REFERENCES notifications (id)
 );
 
-CREATE TABLE sms_notifications
-(
-    notification_id BIGINT PRIMARY KEY,
-    status          ENUM ('PENDING', 'SENT', 'FAILED') NOT NULL,
-    phone_number    VARCHAR(20) NOT NULL,
-    text            TEXT        NOT NULL,
-    FOREIGN KEY (notification_id) REFERENCES notifications (id)
-);
-
 CREATE TABLE posts
 (
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -117,7 +108,7 @@ CREATE TABLE scheduled_jobs
     id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
     name            VARCHAR(30) NOT NULL UNIQUE,
     last_run            TIMESTAMP   NOT NULL DEFAULT NOW(),
-    last_successful_run TIMESTAMP ,
+    last_successful_run TIMESTAMP
 );
 
 -- Indexes for better query performance

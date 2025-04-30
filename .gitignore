@@ -472,7 +472,6 @@ MigrationBackup/
 # End of https://www.toptal.com/developers/gitignore/api/vs,jetbrains
 
 # Database connection
-.db-connection
 **/application-local.yml
 
 # aws access key
