@@ -47,7 +47,7 @@ CREATE TABLE photos
 (
     id          BIGINT PRIMARY KEY AUTO_INCREMENT,
     alert_id    BIGINT       NOT NULL,
-    s3ObjectKey VARCHAR(512) NOT NULL UNIQUE,
+    s3_object_key VARCHAR(512) NOT NULL UNIQUE,
     FOREIGN KEY (alert_id) REFERENCES alerts (id)
 );
 

@@ -225,10 +225,36 @@ components:
         - countryCode
         - title
     CreateAlertRequest:
+      example:
+        userId: 0
+        type: SEEN
+        chipNumber: "9999342343214322"
+        status: ACTIVE
+        sex: UNKNOWN
+        date: "2025-04-17T16:40:27.914Z"
+        title: "Found a cutie pie"
+        description: "Seen at the beach, swimming"
+        breed: "mixed"
+        postalCode: "04001"
+        countryCode: ES
+        photoFilenames: ["photo1.png"]
       allOf:
         - $ref: '#/components/schemas/Alert'
         - $ref: '#/components/schemas/PhotoFileNames'
     CreateAlertResponse:
+      example:
+        userId: 0
+        type: SEEN
+        chipNumber: "9999342343214322"
+        status: ACTIVE
+        sex: UNKNOWN
+        date: "2025-04-17T16:40:27.914Z"
+        title: "Found a cutie pie"
+        description: "Seen at the beach, swimming"
+        breed: "mixed"
+        postalCode: "04001"
+        countryCode: ES
+        photoUrls: ["https:s3.region.aws.com/bucket/photo1__abc123.png"]
       allOf:
         - $ref: '#/components/schemas/Alert'
         - type: object
@@ -259,7 +285,7 @@ components:
         presignedUrl:
           type: string
           format: uri
-          example: "https:s3.region.aws.com/bucket/originalFilename__abc123.jpg"
+          example: "https:s3.region.aws.com/bucket/photo1__abc123.png"
       required:
         - s3ObjectKey
         - presignedUrl

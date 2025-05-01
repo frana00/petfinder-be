@@ -122,7 +122,7 @@ components:
           readOnly: true
         type:
           type: string
-          enum: [ EMAIL, SMS ]
+          enum: [ EMAIL ]
       required:
         - userId
         - alertId

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8.0
@@ -12,7 +10,8 @@ services:
       MYSQL_PASSWORD: pspwd # update with your secure password
     volumes:
       - petsignal_mysql_data:/var/lib/mysql
-      - ./ddl.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init:/docker-entrypoint-initdb.d
+      - ./data:/var/lib/mysql-files
     ports:
       - '3306:3306'
 

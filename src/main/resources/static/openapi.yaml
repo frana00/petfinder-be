@@ -53,9 +53,6 @@ paths:
   /email-notifications:
     $ref: './openapi/notifications-openapi.yaml#/paths/~1email-notifications'
 
-  /sms-notifications:
-    $ref: './openapi/notifications-openapi.yaml#/paths/~1sms-notifications'
-
 components:
   securitySchemes:
     bearerAuth:

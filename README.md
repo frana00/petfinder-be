@@ -28,6 +28,12 @@ A Spring Boot application for managing pet alerts and notifications.
 
 2. Start the MySQL Docker container
    - Update `docker-compose.yml` with your credentials
+   - Firs time only: build the docker container
+   ```
+   cd database;
+   docker compose up --build;
+   cd ..
+   ```
    - Start docker container
    ```
    cd database;
