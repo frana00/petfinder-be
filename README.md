@@ -31,7 +31,7 @@ A Spring Boot application for managing pet alerts and notifications.
    - Firs time only: build the docker container
    ```
    cd database;
-   docker compose up --build;
+   docker compose up --build -d;
    cd ..
    ```
    - Start docker container
