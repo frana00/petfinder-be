@@ -21,7 +21,6 @@ public interface AlertMapper {
   Alert toEntity(AlertRequest request);
 
   @Mapping(target = "photoUrls", ignore = true)
-  @Mapping(target = "userId", source = "user.id")
   @Mapping(target = "postalCode", source = "postCode.postalCode")
   @Mapping(target = "countryCode", source = "postCode.countryCode")
   AlertResponse toResponse(Alert alert);
