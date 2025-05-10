@@ -164,6 +164,32 @@ paths:
       responses:
         '204':
           description: Alert deleted
+  /alerts/{id}/posts:
+    post:
+      operationId: addPostToAlert
+      tags:
+        - Alerts
+      parameters:
+        - $ref: '#/components/parameters/AlertId'
+      summary: Add a post to an alert
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                photoFilenames:
+                  $ref: '#/components/schemas/Post'
+      responses:
+        '201':
+          description: Photos added
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PhotoUrl'
 components:
   schemas:
     Alert:
@@ -226,7 +252,6 @@ components:
         - title
     CreateAlertRequest:
       example:
-        userId: 0
         type: SEEN
         chipNumber: "9999342343214322"
         status: ACTIVE
@@ -243,7 +268,7 @@ components:
         - $ref: '#/components/schemas/PhotoFileNames'
     CreateAlertResponse:
       example:
-        userId: 0
+        username: "hannah@bannanah.bah"
         type: SEEN
         chipNumber: "9999342343214322"
         status: ACTIVE
@@ -294,6 +319,29 @@ components:
       example: [ "image.jpg" ]
       items:
         type: string
+    Post:
+      type: object
+      example:
+        userId: 0
+        title: "Seen similar dog in Town Square"
+        content: "I saw a very similar dog yesterday, and again today. Can I try to approach him and bring him home?"
+      properties:
+        userId:
+          type: integer
+        alertId:
+          type: integer
+          readonly: true
+        title:
+          type: string
+        content:
+          type: text
+        createdAt:
+          type: date-time
+          readonly: true
+      required:
+        - userId
+        - title
+        - content
   parameters:
     AlertId:
       name: id

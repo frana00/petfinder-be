@@ -81,6 +81,10 @@ public class AlertService {
         .orElseThrow(() -> new ResourceNotFoundException(ALERT, "id", id));
 
     alertMapper.updateEntityFromRequest(request, alert);
+    // find postcode in database before saving
+    PostCode postCode = postCodeService
+        .findByPostCodeAndCountry(request.getPostalCode(), request.getCountryCode());
+    alert.setPostCode(postCode);
     Alert updatedAlert = alertRepository.save(alert);
     return alertBuilder.build(updatedAlert, GET);
   }

@@ -3,7 +3,6 @@ package com.petsignal.alert.mapper;
 import com.petsignal.alert.dto.AlertRequest;
 import com.petsignal.alert.dto.AlertResponse;
 import com.petsignal.alert.entity.Alert;
-import com.petsignal.postcodes.entity.PostCode;
 import com.petsignal.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,8 +16,8 @@ public interface AlertMapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "photos", ignore = true)
+  @Mapping(target = "postCode", ignore = true)
   @Mapping(target = "user", source = "userId", qualifiedByName = "userIdToUser")
-  @Mapping(target = "postCode", source = ".", qualifiedByName = "requestToPostCode")
   Alert toEntity(AlertRequest request);
 
   @Mapping(target = "photoUrls", ignore = true)
@@ -31,8 +30,8 @@ public interface AlertMapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "photos", ignore = true)
+  @Mapping(target = "postCode", ignore = true)
   @Mapping(target = "user", source = "userId", qualifiedByName = "userIdToUser")
-  @Mapping(target = "postCode", source = ".", qualifiedByName = "requestToPostCode")
   void updateEntityFromRequest(AlertRequest request, @MappingTarget Alert alert);
 
   @Named("userIdToUser")
@@ -43,16 +42,5 @@ public interface AlertMapper {
     User user = new User();
     user.setId(userId);
     return user;
-  }
-
-  @Named("requestToPostCode")
-  default PostCode requestToPostCode(AlertRequest request) {
-    if (request.getPostalCode() == null && request.getCountryCode() == null) {
-      return null;
-    }
-    PostCode postCode = new PostCode();
-    postCode.setPostalCode(request.getPostalCode());
-    postCode.setCountryCode(request.getCountryCode());
-    return postCode;
   }
 } 
