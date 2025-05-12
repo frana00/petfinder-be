@@ -13,6 +13,7 @@ import com.petsignal.photos.entity.Photo;
 import com.petsignal.photos.service.PhotoService;
 import com.petsignal.postcodes.entity.PostCode;
 import com.petsignal.postcodes.service.PostCodeService;
+import com.petsignal.user.entity.User;
 import com.petsignal.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,12 +64,11 @@ public class AlertService {
 
   @Transactional
   public AlertResponse createAlert(AlertRequest request) {
-    // Validate user exists
-    userService.findById(request.getUserId());
+    User user = userService.findByUsername(request.getUsername());
 
     PostCode postCode = postCodeService.findByPostCodeAndCountry(request.getPostalCode(), request.getCountryCode());
 
-    Alert alert = buildAlertAndPhotosEntities(request, postCode);
+    Alert alert = buildAlertAndPhotosEntities(request, postCode, user);
 
     Alert savedAlert = alertRepository.save(alert);
 
@@ -106,9 +106,10 @@ public class AlertService {
     return alertRepository.findWithPhotosByStatusAndUpdatedAtBetween(AlertStatus.RESOLVED, from, to);
   }
 
-  private Alert buildAlertAndPhotosEntities(AlertRequest request, PostCode postCode) {
+  private Alert buildAlertAndPhotosEntities(AlertRequest request, PostCode postCode, User user) {
     Alert alert = alertMapper.toEntity(request);
     alert.setPostCode(postCode);
+    alert.setUser(user);
 
     List<String> photoFilenames = request.getPhotoFilenames();
     if (photoFilenames != null && !photoFilenames.isEmpty()) {

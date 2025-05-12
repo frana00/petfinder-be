@@ -16,8 +16,8 @@ import java.util.List;
 @Data
 public class AlertRequest {
 
-  @NotNull(message = "User ID is required")
-  private Long userId;
+  @NotNull(message = "Username is required")
+  private String username;
 
   @NotNull(message = "Alert type is required")
   private AlertType type;

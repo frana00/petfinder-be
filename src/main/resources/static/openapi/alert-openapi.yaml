@@ -195,7 +195,7 @@ components:
     Alert:
       type: object
       example:
-        user: {username: "hannah@bannanah.bah", userId: 1}
+        username: "hannah-bannanah"
         type: SEEN
         chipNumber: "9999342343214322"
         status: ACTIVE
@@ -210,8 +210,8 @@ components:
         id:
           type: integer
           readOnly: true
-        user:
-          $ref: '#/components/schemas/AlertUser'
+        username:
+          type: string
         type:
           type: string
           enum: [ LOST, SEEN ]
@@ -252,7 +252,7 @@ components:
         - title
     CreateAlertRequest:
       example:
-        userId: 1
+        username: "hannah-bannanah"
         type: SEEN
         chipNumber: "9999342343214322"
         status: ACTIVE
@@ -269,7 +269,7 @@ components:
         - $ref: '#/components/schemas/PhotoFileNames'
     CreateAlertResponse:
       example:
-        username: "hannah@bannanah.bah"
+        username: "hannah-bannanah"
         type: SEEN
         chipNumber: "9999342343214322"
         status: ACTIVE
@@ -289,16 +289,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PhotoUrl'
-    AlertUser:
-      type: object
-      properties:
-        id:
-          type: integer
-          readonly: true
-        username:
-          type: string
-      required:
-        - id
     Photo:
       type: object
       properties:

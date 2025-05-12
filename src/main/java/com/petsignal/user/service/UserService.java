@@ -32,6 +32,12 @@ public class UserService {
         .orElseThrow(() -> new ResourceNotFoundException(USER, "id", id));
   }
 
+
+  public User findByUsername(String username) {
+    return userRepository.findByUsername(username)
+        .orElseThrow(() -> new ResourceNotFoundException(USER, "username", username));
+  }
+
   @Transactional
   public UserResponse createUser(UserRequest request) {
     User user = userMapper.toEntity(request);

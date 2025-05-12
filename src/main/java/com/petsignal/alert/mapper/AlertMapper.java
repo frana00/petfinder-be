@@ -17,12 +17,13 @@ public interface AlertMapper {
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "photos", ignore = true)
   @Mapping(target = "postCode", ignore = true)
-  @Mapping(target = "user", source = "userId", qualifiedByName = "userIdToUser")
+  @Mapping(target = "user", ignore = true)
   Alert toEntity(AlertRequest request);
 
   @Mapping(target = "photoUrls", ignore = true)
   @Mapping(target = "postalCode", source = "postCode.postalCode")
   @Mapping(target = "countryCode", source = "postCode.countryCode")
+  @Mapping(target = "username", source = "user.username")
   AlertResponse toResponse(Alert alert);
 
   @Mapping(target = "id", ignore = true)
@@ -30,7 +31,7 @@ public interface AlertMapper {
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "photos", ignore = true)
   @Mapping(target = "postCode", ignore = true)
-  @Mapping(target = "user", source = "userId", qualifiedByName = "userIdToUser")
+  @Mapping(target = "user", ignore = true)
   void updateEntityFromRequest(AlertRequest request, @MappingTarget Alert alert);
 
   @Named("userIdToUser")

@@ -14,7 +14,7 @@ public class AlertResponse {
 
   private Long id;
 
-  private AlertUser user;
+  private String username;
 
   private AlertType type;
 
