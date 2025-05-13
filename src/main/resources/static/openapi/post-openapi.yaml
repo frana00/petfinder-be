@@ -1,0 +1,82 @@
+paths:
+  /alerts/{id}/posts:
+    get:
+      operationId: listPostsForAlert
+      tags:
+        - Alerts
+        - Posts
+      summary: List all posts for an alert
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of posts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostResponse'
+    post:
+      operationId: createPost
+      tags:
+        - Alerts
+        - Posts
+      summary: Create a new post against alert
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostRequest'
+      responses:
+        '201':
+          description: Post created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+components:
+  schemas:
+    PostRequest:
+      type: object
+      example:
+        username: "hannah-bannanah"
+        content: "I think I saw him yesterday"
+      properties:
+        username:
+          type: string
+        content:
+          type: string
+      required:
+        - username
+        - content
+    PostResponse:
+      type: object
+      example:
+        id: 1
+        alertId: 1
+        username: "hannah-bannanah"
+        content: "I think I saw him yesterday"
+        createdAt: "2025-04-17T16:40:27.914Z"
+      properties:
+        id:
+          type: integer
+        alertId:
+          type: integer
+        username:
+          type: string
+        content:
+          type: string
+        createdAt:
+          type: date

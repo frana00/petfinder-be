@@ -1,14 +1,14 @@
 package com.petsignal.alert.entity;
 
+import com.petsignal.photos.entity.Photo;
+import com.petsignal.postcodes.entity.PostCode;
+import com.petsignal.posts.entity.Post;
+import com.petsignal.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
-import com.petsignal.postcodes.entity.PostCode;
-import com.petsignal.user.entity.User;
-import com.petsignal.photos.entity.Photo;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,53 +19,56 @@ import java.util.List;
 @Entity
 @Table(name = "alerts")
 public class Alert {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AlertType type;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private AlertType type;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AlertStatus status;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private AlertStatus status;
 
-    @Column(name = "chip_number")
-    private String chipNumber;
+  @Column(name = "chip_number")
+  private String chipNumber;
 
-    @Enumerated(EnumType.STRING)
-    @Column
-    private AlertSex sex;
+  @Enumerated(EnumType.STRING)
+  @Column
+  private AlertSex sex;
 
-    @Column(nullable = false)
-    private LocalDateTime date;
+  @Column(nullable = false)
+  private LocalDateTime date;
 
-    @Column(length = 100)
-    private String title;
+  @Column(length = 100)
+  private String title;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+  @Column(columnDefinition = "TEXT")
+  private String description;
 
-    @Column(length = 100)
-    private String breed;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "postal_code_id", nullable = false)
-    private PostCode postCode;
+  @Column(length = 100)
+  private String breed;
 
-    @OneToMany(mappedBy = "alert", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Photo> photos = new ArrayList<>();
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "postal_code_id", nullable = false)
+  private PostCode postCode;
 
-    @Column(name = "updated_at", nullable = false)
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
+  @OneToMany(mappedBy = "alert", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Photo> photos = new ArrayList<>();
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+  @OneToMany(mappedBy = "alert", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Post> posts = new ArrayList<>();
+
+  @Column(name = "updated_at", nullable = false)
+  @UpdateTimestamp
+  private LocalDateTime updatedAt;
+
+  @Column(name = "created_at", nullable = false, updatable = false)
+  @CreationTimestamp
+  private LocalDateTime createdAt;
 } 

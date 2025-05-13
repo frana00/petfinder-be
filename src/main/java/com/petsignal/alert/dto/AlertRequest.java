@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 public class AlertRequest {
 
-  @NotNull(message = "Username is required")
+  @NotBlank(message = "Username is required")
   private String username;
 
   @NotNull(message = "Alert type is required")
@@ -36,6 +36,8 @@ public class AlertRequest {
   @Size(max = 100, message = "Title must be at most 100 characters")
   private String title;
 
+  @NotBlank(message = "Description is required")
+  @Size(max = 300, message = "Description must be at most 300 characters")
   private String description;
 
   @Size(max = 100, message = "Breed must be at most 100 characters")

@@ -3,11 +3,9 @@ package com.petsignal.alert.mapper;
 import com.petsignal.alert.dto.AlertRequest;
 import com.petsignal.alert.dto.AlertResponse;
 import com.petsignal.alert.entity.Alert;
-import com.petsignal.user.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public interface AlertMapper {
@@ -18,6 +16,7 @@ public interface AlertMapper {
   @Mapping(target = "photos", ignore = true)
   @Mapping(target = "postCode", ignore = true)
   @Mapping(target = "user", ignore = true)
+  @Mapping(target = "posts", ignore = true)
   Alert toEntity(AlertRequest request);
 
   @Mapping(target = "photoUrls", ignore = true)
@@ -32,15 +31,7 @@ public interface AlertMapper {
   @Mapping(target = "photos", ignore = true)
   @Mapping(target = "postCode", ignore = true)
   @Mapping(target = "user", ignore = true)
+  @Mapping(target = "posts", ignore = true)
   void updateEntityFromRequest(AlertRequest request, @MappingTarget Alert alert);
 
-  @Named("userIdToUser")
-  default User userIdToUser(Long userId) {
-    if (userId == null) {
-      return null;
-    }
-    User user = new User();
-    user.setId(userId);
-    return user;
-  }
 } 
