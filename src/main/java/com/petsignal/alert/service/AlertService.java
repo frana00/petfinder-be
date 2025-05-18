@@ -113,7 +113,7 @@ public class AlertService {
     Alert alert = alertRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(ALERT, "id", id));
 
     // delete alert from DB
-    alertRepository.deleteById(id);
+    alert.setDeleted(true);
 
     eventPublisher.publishEvent(new AlertEvent(alert, AlertEvent.Type.DELETED));
 
@@ -146,6 +146,6 @@ public class AlertService {
   public List<Alert> getOppositeAlertsInPostcode(Alert alert) {
     AlertType type = SEEN.equals(alert.getType()) ? LOST : SEEN;
 
-    return alertRepository.findByTypeAndPostCode(type, alert.getPostCode());
+    return alertRepository.findByTypeAndPostCodeAndDeletedFalse(type, alert.getPostCode());
   }
 }

@@ -33,12 +33,13 @@ CREATE TABLE alerts
     status         ENUM ('ACTIVE', 'RESOLVED') NOT NULL,
     chip_number    VARCHAR(50) COMMENT 'Chip number of the pet',
     sex            ENUM ('MALE', 'FEMALE', 'UNKNOWN'),
-    created_at     TIMESTAMP DEFAULT NOW(),
-    updated_at     TIMESTAMP DEFAULT NOW(),
+    created_at     TIMESTAMP             DEFAULT NOW(),
+    updated_at     TIMESTAMP             DEFAULT NOW(),
     date           TIMESTAMP    NOT NULL,
     title          VARCHAR(255) NOT NULL,
     description    TEXT,
     breed          VARCHAR(100),
+    deleted        BOOLEAN      NOT NULL DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (postal_code_id) REFERENCES postal_codes (id)
 );

@@ -7,6 +7,8 @@ import com.petsignal.user.entity.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import static com.petsignal.alert.events.AlertEvent.Type.DELETED;
+
 @Component
 public class EmailBuilder {
 
@@ -36,7 +38,7 @@ public class EmailBuilder {
       The following alert has been %notification_reason%.
       %alert_info%
       
-      You can see the full alert details here: %alert_link%
+      %alert_link_line%
       """;
 
   private static final String TEMPLATE_NEW = """
@@ -63,11 +65,15 @@ public class EmailBuilder {
 
   public String buildAlertChangeBody(AlertEvent.Type reason, User user, Alert alert) {
 
+    String alertLinkLine = !DELETED.equals(reason)
+        ? "You can see the full alert details here: " + getAlertLink(alert)
+        : "";
+
     return TEMPLATE_CHANGE
         .replace(USERNAME_PLACEHOLDER, user.getUsername())
         .replace(ALERT_INFO_PLACEHOLDER, fillInAlertInfo(alert))
         .replace("%notification_reason%", reason.name().toLowerCase())
-        .replace("%alert_link%", getAlertLink(alert));
+        .replace("%alert_link_line%", alertLinkLine);
   }
 
   public String buildNewAlertBody(User user, Alert alert) {

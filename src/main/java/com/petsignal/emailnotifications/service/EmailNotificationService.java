@@ -54,7 +54,7 @@ public class EmailNotificationService {
 
   public void sendNewAlertEmail(Alert alert, User user) {
     EmailNotification emailNotification = createBasicEmailObject(alert, user);
-    emailNotification.setSubject(String.format("A new alert has been created in postcode %s", alert.getPostCode()));
+    emailNotification.setSubject(String.format("A new alert has been created in postcode %s", alert.getPostCode().getPostalCode()));
     emailNotification.setBody(emailBuilder.buildNewAlertBody(user, alert));
 
     sendAndSaveEmail(emailNotification);
