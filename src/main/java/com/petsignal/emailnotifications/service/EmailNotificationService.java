@@ -6,6 +6,7 @@ import com.petsignal.emailnotifications.EmailService;
 import com.petsignal.emailnotifications.entity.EmailNotification;
 import com.petsignal.emailnotifications.repository.EmailRepository;
 import com.petsignal.emailnotifications.utils.EmailBuilder;
+import com.petsignal.posts.entity.Post;
 import com.petsignal.user.entity.User;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +58,16 @@ public class EmailNotificationService {
     emailNotification.setBody(emailBuilder.buildNewAlertBody(user, alert));
 
     sendAndSaveEmail(emailNotification);
+  }
+
+  public void sendNewPostEmail(Post post, User user) {
+    EmailNotification emailNotification = createBasicEmailObject(post.getAlert(), user);
+
+    emailNotification.setSubject("New post activity");
+    emailNotification.setBody(emailBuilder.buildNewPostBody(user, post));
+
+    sendAndSaveEmail(emailNotification);
+
   }
 
   private EmailNotification createBasicEmailObject(Alert alert, User user) {
