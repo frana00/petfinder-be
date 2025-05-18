@@ -3,6 +3,7 @@ package com.petsignal.alert.repository;
 import com.petsignal.alert.entity.Alert;
 import com.petsignal.alert.entity.AlertStatus;
 import com.petsignal.alert.entity.AlertType;
+import com.petsignal.postcodes.entity.PostCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,4 +43,6 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
   List<Alert> findWithPhotosByStatusAndUpdatedAtBetween(@Param("status") AlertStatus status,
                                                         @Param("from") LocalDateTime from,
                                                         @Param("to") LocalDateTime to);
-} 
+
+  List<Alert> findByTypeAndPostCode(AlertType type, PostCode postCode);
+}

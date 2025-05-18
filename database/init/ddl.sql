@@ -45,8 +45,8 @@ CREATE TABLE alerts
 
 CREATE TABLE photos
 (
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    alert_id    BIGINT       NOT NULL,
+    id            BIGINT PRIMARY KEY AUTO_INCREMENT,
+    alert_id      BIGINT       NOT NULL,
     s3_object_key VARCHAR(512) NOT NULL UNIQUE,
     FOREIGN KEY (alert_id) REFERENCES alerts (id)
 );
@@ -84,12 +84,12 @@ CREATE TABLE notifications
 
 CREATE TABLE email_notifications
 (
-    notification_id BIGINT PRIMARY KEY,
-    status          ENUM ('PENDING', 'SENT', 'FAILED') NOT NULL,
-    `to`            VARCHAR(254) NOT NULL,
-    subject         VARCHAR(100) NOT NULL,
-    body            TEXT         NOT NULL,
-    FOREIGN KEY (notification_id) REFERENCES notifications (id)
+    id      BIGINT PRIMARY KEY,
+    status  ENUM ('PENDING', 'SENT', 'FAILED') NOT NULL,
+    send_to VARCHAR(254) NOT NULL,
+    subject VARCHAR(100) NOT NULL,
+    body    TEXT         NOT NULL,
+    FOREIGN KEY (id) REFERENCES notifications (id)
 );
 
 CREATE TABLE posts
@@ -106,7 +106,7 @@ CREATE TABLE posts
 CREATE TABLE scheduled_jobs
 (
     id                  BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name            VARCHAR(30) NOT NULL UNIQUE,
+    name                VARCHAR(30) NOT NULL UNIQUE,
     last_run            TIMESTAMP   NOT NULL DEFAULT NOW(),
     last_successful_run TIMESTAMP
 );

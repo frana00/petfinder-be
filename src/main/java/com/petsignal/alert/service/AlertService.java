@@ -5,6 +5,7 @@ import com.petsignal.alert.dto.AlertResponse;
 import com.petsignal.alert.entity.Alert;
 import com.petsignal.alert.entity.AlertStatus;
 import com.petsignal.alert.entity.AlertType;
+import com.petsignal.alert.events.AlertEvent;
 import com.petsignal.alert.mapper.AlertMapper;
 import com.petsignal.alert.mapper.AlertResponseBuilder;
 import com.petsignal.alert.repository.AlertRepository;
@@ -17,6 +18,7 @@ import com.petsignal.user.entity.User;
 import com.petsignal.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.petsignal.alert.entity.AlertType.LOST;
+import static com.petsignal.alert.entity.AlertType.SEEN;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PUT;
 
@@ -40,6 +44,7 @@ public class AlertService {
   private final PostCodeService postCodeService;
   private final PhotoService photoService;
   private final AlertResponseBuilder alertBuilder;
+  private final ApplicationEventPublisher eventPublisher;
 
   @Transactional(readOnly = true)
   public Page<AlertResponse> getAllAlerts(
@@ -72,6 +77,8 @@ public class AlertService {
 
     Alert savedAlert = alertRepository.save(alert);
 
+    eventPublisher.publishEvent(new AlertEvent(savedAlert, AlertEvent.Type.CREATED));
+
     return alertBuilder.build(savedAlert, PUT);
   }
 
@@ -86,7 +93,19 @@ public class AlertService {
         .findByPostCodeAndCountry(request.getPostalCode(), request.getCountryCode());
     alert.setPostCode(postCode);
     Alert updatedAlert = alertRepository.save(alert);
+
+    AlertEvent.Type reason = getNotificationReason(request, alert);
+    eventPublisher.publishEvent(new AlertEvent(updatedAlert, reason));
+
     return alertBuilder.build(updatedAlert, GET);
+  }
+
+  private static AlertEvent.Type getNotificationReason(AlertRequest request, Alert alert) {
+    if (AlertStatus.RESOLVED.equals(request.getStatus()) && AlertStatus.RESOLVED.equals(alert.getStatus())) {
+      return AlertEvent.Type.RESOLVED;
+    } else {
+      return AlertEvent.Type.UPDATED;
+    }
   }
 
   @Transactional
@@ -95,6 +114,8 @@ public class AlertService {
 
     // delete alert from DB
     alertRepository.deleteById(id);
+
+    eventPublisher.publishEvent(new AlertEvent(alert, AlertEvent.Type.DELETED));
 
     // delete photos from s3
     photoService.deletePhotos(alert.getPhotos());
@@ -122,4 +143,9 @@ public class AlertService {
     return alert;
   }
 
+  public List<Alert> getOppositeAlertsInPostcode(Alert alert) {
+    AlertType type = SEEN.equals(alert.getType()) ? LOST : SEEN;
+
+    return alertRepository.findByTypeAndPostCode(type, alert.getPostCode());
+  }
 }
