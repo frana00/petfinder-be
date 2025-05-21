@@ -1,0 +1,143 @@
+paths:
+  /notifications:
+    get:
+      operationId: listNotifications
+      tags:
+        - Notifications
+      summary: List all notifications
+      responses:
+        '200':
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+    post:
+      operationId: createNotification
+      tags:
+        - Notifications
+      summary: Create a new notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      responses:
+        '201':
+          description: Notification created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+  /notifications/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+    get:
+      operationId: getNotificationById
+      tags:
+        - Notifications
+      summary: Get a notification by ID
+      responses:
+        '200':
+          description: Notification found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+    put:
+      operationId: updateNotification
+      tags:
+        - Notifications
+      summary: Update a notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      responses:
+        '200':
+          description: Notification updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+    delete:
+      operationId: deleteNotification
+      tags:
+        - Notifications
+      summary: Delete a notification
+      responses:
+        '204':
+          description: Notification deleted
+  /email-notifications:
+    post:
+      operationId: sendEmailNotification
+      tags:
+        - Notifications
+      summary: Send an email notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailNotification'
+      responses:
+        '200':
+          description: Email notification sent
+components:
+  schemas:
+    Notification:
+      type: object
+      example:
+        id: 1
+        userId: 2
+        alertId: 3
+        message: "New alert in your area"
+        isRead: false
+        createdAt: "2024-03-15T14:30:00Z"
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        userId:
+          type: integer
+        alertId:
+          type: integer
+        message:
+          type: string
+        isRead:
+          type: boolean
+          default: false
+        createdAt:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - userId
+        - message
+    EmailNotification:
+      type: object
+      example:
+        to: "recipient@example.com"
+        subject: "Alert Notification"
+        body: "There is a new alert in your area"
+      properties:
+        to:
+          type: string
+          format: email
+        subject:
+          type: string
+        body:
+          type: string
+      required:
+        - to
+        - subject
+        - body

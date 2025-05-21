@@ -4,10 +4,10 @@ services:
     container_name: petsignal-db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootpwd # update with your secure password
-      MYSQL_DATABASE: petsignaldb
-      MYSQL_USER: petsignaluser
-      MYSQL_PASSWORD: pspwd # update with your secure password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - petsignal_mysql_data:/var/lib/mysql
       - ./init:/docker-entrypoint-initdb.d

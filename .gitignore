@@ -474,6 +474,10 @@ MigrationBackup/
 # Database connection
 **/application-local.yml
 
+# Environment files
+.env
+database/.env
+
 # aws access key
 **/petsignal-be_accessKeys.csv
 # target folder
