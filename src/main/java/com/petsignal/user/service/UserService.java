@@ -35,6 +35,11 @@ public class UserService {
         .orElseThrow(() -> new ResourceNotFoundException(USER, "id", id));
   }
 
+  public User findEntityById(Long id) {
+    return userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(USER, "id", id));
+  }
+
 
   public User findByUsername(String username) {
     return userRepository.findByUsername(username)

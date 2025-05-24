@@ -5,15 +5,6 @@ paths:
       tags:
         - Subscriptions
       summary: List all subscriptions
-      parameters:
-        - name: userId
-          in: query
-          schema:
-            type: integer
-        - name: countryId
-          in: query
-          schema:
-            type: integer
       responses:
         '200':
           description: List of subscriptions
@@ -42,17 +33,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/Subscription'
   /subscriptions/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
     get:
       operationId: getSubscriptionById
       tags:
         - Subscriptions
       summary: Get a subscription by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: Subscription found
@@ -65,6 +56,12 @@ paths:
       tags:
         - Subscriptions
       summary: Update a subscription
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -83,6 +80,12 @@ paths:
       tags:
         - Subscriptions
       summary: Delete a subscription
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         '204':
           description: Subscription deleted
@@ -96,15 +99,21 @@ components:
           readOnly: true
         userId:
           type: integer
-        cp:
+        postCodes:
+          type: array
+          items:
+            type: string
+        countryCode:
           type: string
-        countryId:
-          type: integer
         alertType:
           type: string
           enum: [ LOST, FOUND ]
+        notificationType:
+          type: string
+          enum: [ EMAIL, SMS ]
       required:
         - userId
-        - cp
-        - countryId
+        - postCodes
+        - countryCode
         - alertType
+        - notificationType
