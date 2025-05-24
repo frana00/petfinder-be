@@ -2,7 +2,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /api/v1
+    context-path: ""
 
 spring:
   application:
@@ -14,7 +14,7 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-  
+
   # JPA Configuration
   jpa:
     hibernate:
@@ -42,6 +42,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
+    username: ${GMAIL_ADDRESS}
+    password: ${APP_EMAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -72,3 +74,8 @@ aws:
 scheduling:
   delete-photos:
     cron: "0 0 3 * * *"
+
+# email notification settings
+notifications:
+  email:
+    from: ${FROM_EMAIL_ADDRESS}
