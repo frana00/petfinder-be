@@ -7,10 +7,14 @@ import com.petsignal.emailnotifications.service.EmailNotificationService;
 import com.petsignal.posts.entity.Post;
 import com.petsignal.posts.event.PostEvent;
 import com.petsignal.posts.service.PostService;
+import com.petsignal.subscriptions.entity.Subscription;
+import com.petsignal.subscriptions.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Stream;
 
 
 @Slf4j
@@ -20,6 +24,7 @@ public class NotificationService {
 
   private final EmailNotificationService emailNotificationService;
   private final AlertService alertService;
+  private final SubscriptionService subscriptionService;
   private final PostService postService;
 
   @EventListener
@@ -51,15 +56,30 @@ public class NotificationService {
   }
 
   private void handlerNewAlert(Alert alert) {
-    alertService.getOppositeAlertsInPostcode(alert).stream()
-        .map(Alert::getUser)
+
+    // subscribers
+    var subscribers = subscriptionService.findByTypeAndPostCode(alert.getType(), alert.getPostCode()).stream()
+        .map(Subscription::getUser);
+
+    // alert owners
+    var existingAlertOwners = alertService.getOppositeAlertsInPostcode(alert).stream()
+        .map(Alert::getUser);
+
+    Stream.concat(subscribers, existingAlertOwners)
         .distinct()
         .forEach(user -> emailNotificationService.sendNewAlertEmail(alert, user));
   }
 
   public void handleAlertChange(AlertEvent.Type reason, Alert alert) {
-    // email alert owner
-    emailNotificationService.sendAlertChangeEmailNotification(reason, alert.getUser(), alert);
+
+    var posters = postService.findByAlertId(alert.getId()).stream()
+        .map(Post::getUser)
+        .distinct();
+
+    // notify owner and posters
+    Stream.concat(posters, Stream.of(alert.getUser()))
+        .distinct()
+        .forEach(user -> emailNotificationService.sendAlertChangeEmailNotification(reason, user, alert));
 
   }
 

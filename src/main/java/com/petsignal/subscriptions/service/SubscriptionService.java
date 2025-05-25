@@ -1,8 +1,10 @@
 package com.petsignal.subscriptions.service;
 
+import com.petsignal.alert.entity.AlertType;
 import com.petsignal.countries.entity.Country;
 import com.petsignal.countries.service.CountryService;
 import com.petsignal.exception.ResourceNotFoundException;
+import com.petsignal.postcodes.entity.PostCode;
 import com.petsignal.postcodes.service.PostCodeService;
 import com.petsignal.subscriptions.dto.SubscriptionDto;
 import com.petsignal.subscriptions.entity.Subscription;
@@ -22,7 +24,7 @@ import java.util.stream.Collectors;
 public class SubscriptionService {
 
   private static final String SUBSCRIPTION = "User";
-  
+
   private final SubscriptionRepository subscriptionRepository;
   private final SubscriptionMapper subscriptionMapper;
 
@@ -34,6 +36,11 @@ public class SubscriptionService {
     return subscriptionRepository.findAll().stream()
         .map(subscriptionMapper::toDto)
         .toList();
+  }
+
+  public List<Subscription> findByTypeAndPostCode(AlertType alertType, PostCode postCode) {
+    return subscriptionRepository.findByAlertTypeAndPostalCodeAndCountryCode(alertType, postCode.getPostalCode(),
+        postCode.getCountryCode());
   }
 
   public SubscriptionDto findById(Long id) {
