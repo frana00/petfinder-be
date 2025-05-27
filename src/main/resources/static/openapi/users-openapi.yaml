@@ -19,12 +19,13 @@ paths:
       tags:
         - Users
       summary: Create a new user
+      security: [ ]
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              $ref: '#/components/schemas/CreateUserRequest'
       responses:
         '201':
           description: User created
@@ -33,17 +34,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
   /users/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
     get:
       operationId: getUserById
       tags:
         - Users
       summary: Get a user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: User found
@@ -56,6 +57,12 @@ paths:
       tags:
         - Users
       summary: Update a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
@@ -96,6 +103,9 @@ components:
         username:
           type: string
           maxLength: 50
+        password:
+          type: string
+          writeOnly: true
         email:
           type: string
           format: email
@@ -118,3 +128,20 @@ components:
         - username
         - email
         - role
+    CreateUserRequest:
+      example:
+        id: 1
+        username: "hannah_bannanah"
+        email: "hannah@bannanah.com"
+        password: "password101"
+        subscriptionEmail: "bannanah@notifications.com"
+        phoneNumber: "+34123456789"
+        role: "USER"
+      allOf:
+        - $ref: '#/components/schemas/User'
+        - password:
+            type: string
+      required:
+        - username
+        - email
+        - password

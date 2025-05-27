@@ -44,7 +44,7 @@ public class EmailBuilder {
   private static final String TEMPLATE_NEW = """
       Hello %username%,
       
-      A new alert has been created in the same postcode as your current active one.
+      A new alert has been created in %postcode%.
       %alert_info%
       
       You can see the full alert details here: %alert_link%
@@ -82,6 +82,7 @@ public class EmailBuilder {
     return TEMPLATE_NEW
         .replace(USERNAME_PLACEHOLDER, user.getUsername())
         .replace(ALERT_INFO_PLACEHOLDER, fillInAlertInfo(alert))
+        .replace("%postcode%", alert.getPostCode().getPostalCode())
         .replace("%alert_link%", getAlertLink(alert));
   }
 

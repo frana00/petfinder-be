@@ -1,6 +1,7 @@
 package com.petsignal.user.controller;
 
-import com.petsignal.user.dto.UserRequest;
+import com.petsignal.user.dto.CreateUserRequest;
+import com.petsignal.user.dto.UpdateUserRequest;
 import com.petsignal.user.dto.UserResponse;
 import com.petsignal.user.service.UserService;
 import jakarta.validation.Valid;
@@ -28,12 +29,12 @@ public class UserController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public UserResponse createUser(@Valid @RequestBody UserRequest request) {
+  public UserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
     return userService.createUser(request);
   }
 
   @PutMapping("/{id}")
-  public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody UserRequest request) {
+  public UserResponse updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
     return userService.updateUser(id, request);
   }
 

@@ -17,11 +17,12 @@ tags:
     description: Operations about notifications
 
 servers:
-  - url: http://localhost:8080/api/v1
+  - url: http://localhost:8080
     description: Local development server
 
 security:
-  - bearerAuth: [ ]
+  - basicAuth: [ ]
+
 
 paths:
   /alerts:
@@ -49,17 +50,8 @@ paths:
   /subscriptions/{id}:
     $ref: './openapi/subscriptions-openapi.yaml#/paths/~1subscriptions~1{id}'
 
-  /notifications:
-    $ref: './openapi/notifications-openapi.yaml#/paths/~1notifications'
-  /notifications/{id}:
-    $ref: './openapi/notifications-openapi.yaml#/paths/~1notifications~1{id}'
-
-  /email-notifications:
-    $ref: './openapi/notifications-openapi.yaml#/paths/~1email-notifications'
-
 components:
   securitySchemes:
-    bearerAuth:
+    basicAuth:
       type: http
-      scheme: bearer
-      bearerFormat: JWT
+      scheme: basic

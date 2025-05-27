@@ -16,7 +16,8 @@ CREATE TABLE postal_codes
 CREATE TABLE users
 (
     id                 BIGINT PRIMARY KEY AUTO_INCREMENT,
-    username           VARCHAR(50)  NOT NULL,
+    username           VARCHAR(50)  NOT NULL UNIQUE,
+    password           VARCHAR(255) NOT NULL,
     email              VARCHAR(100) NOT NULL UNIQUE,
     subscription_email VARCHAR(100) NOT NULL,
     phone_number       VARCHAR(20),
@@ -57,8 +58,8 @@ CREATE TABLE subscriptions
     id           BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id      BIGINT     NOT NULL,
     country_code VARCHAR(2) NOT NULL,
-    alert_type   ENUM ('LOST', 'FOUND') NOT NULL,
-    type         ENUM ('EMAIL', 'SMS')  NOT NULL,
+    alert_type   ENUM ('LOST', 'SEEN') NOT NULL,
+    notification_type         ENUM ('EMAIL', 'SMS')  NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (country_code) REFERENCES countries (country_code)
 );

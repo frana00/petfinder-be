@@ -10,6 +10,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface AlertMapper {
 
+  @Mapping(target = "deleted", ignore = true)
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
@@ -25,6 +26,7 @@ public interface AlertMapper {
   @Mapping(target = "username", source = "user.username")
   AlertResponse toResponse(Alert alert);
 
+  @Mapping(target = "deleted", ignore = true)
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)

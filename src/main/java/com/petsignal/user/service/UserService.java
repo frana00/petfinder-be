@@ -1,12 +1,14 @@
 package com.petsignal.user.service;
 
 import com.petsignal.exception.ResourceNotFoundException;
-import com.petsignal.user.dto.UserRequest;
+import com.petsignal.user.dto.CreateUserRequest;
+import com.petsignal.user.dto.UpdateUserRequest;
 import com.petsignal.user.dto.UserResponse;
 import com.petsignal.user.entity.User;
 import com.petsignal.user.mapper.UserMapper;
 import com.petsignal.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ public class UserService {
   private static final String USER = "User";
   private final UserRepository userRepository;
   private final UserMapper userMapper;
+  private final PasswordEncoder passwordEncoder;
 
   public List<UserResponse> getAllUsers() {
     return userRepository.findAll().stream()
@@ -32,6 +35,11 @@ public class UserService {
         .orElseThrow(() -> new ResourceNotFoundException(USER, "id", id));
   }
 
+  public User findEntityById(Long id) {
+    return userRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException(USER, "id", id));
+  }
+
 
   public User findByUsername(String username) {
     return userRepository.findByUsername(username)
@@ -39,13 +47,14 @@ public class UserService {
   }
 
   @Transactional
-  public UserResponse createUser(UserRequest request) {
+  public UserResponse createUser(CreateUserRequest request) {
     User user = userMapper.toEntity(request);
+    user.setPassword(passwordEncoder.encode(request.getPassword()));
     return userMapper.toResponse(userRepository.save(user));
   }
 
   @Transactional
-  public UserResponse updateUser(Long id, UserRequest request) {
+  public UserResponse updateUser(Long id, UpdateUserRequest request) {
     User user = userRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(USER, "id", id));
 
