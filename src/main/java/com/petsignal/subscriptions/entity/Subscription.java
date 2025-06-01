@@ -33,7 +33,7 @@ public class Subscription {
   private AlertType alertType;
 
   @Enumerated(EnumType.STRING)
-  @Column(name = "notification_type")
+  @Column(name = "type")
   private NotificationType notificationType;
 
   @ManyToMany

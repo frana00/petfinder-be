@@ -66,7 +66,7 @@ public class S3BucketService {
 
     PresignedGetObjectRequest presignedRequest = s3Presigner.presignGetObject(presignRequest);
     String myURL = presignedRequest.url().toString();
-    log.info("Presigned URL to upload a file to: [{}]", myURL);
+    log.info("Presigned URL to get/download a file from: [{}]", myURL);
     log.info("HTTP method: [{}]", presignedRequest.httpRequest().method());
 
     return presignedRequest.url().toExternalForm();
