@@ -39,22 +39,24 @@ spring:
       additional-paths: src/main/java
       exclude: WEB-INF/**
 
-  # Email configuration
+  # Email configuration for Spring Boot AutoConfiguration
   mail:
     host: smtp.gmail.com
     port: 587
     username: ${GMAIL_ADDRESS}
     password: ${APP_EMAIL_PASSWORD}
     properties:
-      mail:
-        smtp:
-          auth: true
-          connectiontimeout: 5000
-          timeout: 5000
-          writetimeout: 5000
-          starttls:
-            enable: true
-        test-connection: true
+      mail.smtp.auth: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
+      mail.smtp.starttls.enable: true
+    # test-connection: true # This is not a standard Spring Boot property, consider removing or handling differently
+
+petsignal:
+  jwt:
+    secret: ${JWT_SECRET_KEY}
+    expiration: ${JWT_EXPIRATION_MS}
 
 # OpenAPI Configuration
 springdoc:
@@ -80,3 +82,9 @@ scheduling:
 notifications:
   email:
     from: ${FROM_EMAIL_ADDRESS}
+
+# Logging configuration for Hibernate SQL and parameters
+logging:
+  level:
+    org.hibernate.SQL: DEBUG # Muestra las sentencias SQL generadas
+    org.hibernate.type.descriptor.sql: TRACE # Muestra los parámetros bindeados a las sentencias SQL
