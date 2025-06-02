@@ -483,6 +483,9 @@ database/.env
 # target folder
 target/*
 
+# Utility classes not meant for version control
+PasswordEncoderUtil.java
+
 # .vscode folder
 .vscode/*
 
