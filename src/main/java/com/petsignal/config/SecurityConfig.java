@@ -1,11 +1,11 @@
 package com.petsignal.config;
 
 import com.petsignal.security.CustomUserDetailsService;
+import com.petsignal.security.JwtAuthFilter; // Added import
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +23,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfig {
 
   private final CustomUserDetailsService userDetailsService;
+  private final JwtAuthFilter jwtAuthFilter; // Added JwtAuthFilter injection
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -39,6 +40,7 @@ public class SecurityConfig {
     http
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
+            .requestMatchers(POST, "/auth/**").permitAll() // Permit all under /auth for login, refresh, etc. (context-path is empty)
             .requestMatchers(POST, "/users").permitAll()
             .requestMatchers(
                 "/swagger-ui/**",
@@ -56,7 +58,8 @@ public class SecurityConfig {
         )
         .userDetailsService(userDetailsService)
         .sessionManagement(sess -> sess.sessionCreationPolicy(STATELESS))
-        .httpBasic(Customizer.withDefaults());
+        .httpBasic(org.springframework.security.config.Customizer.withDefaults()) // Enable HTTP Basic Authentication
+        .addFilterBefore(jwtAuthFilter, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }
