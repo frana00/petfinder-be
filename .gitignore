@@ -483,6 +483,12 @@ database/.env
 # target folder
 target/*
 
+# Utility directory and its contents
+src/main/java/com/petsignal/util/
+
+# Consolidated notes file
+src/main/resources/consolidado.txt
+
 # .vscode folder
 .vscode/*
 
