@@ -56,18 +56,26 @@ public class NotificationService {
   }
 
   private void handlerNewAlert(Alert alert) {
+    // Only process postcode-based notifications if the alert has a postcode
+    if (alert.getPostCode() != null) {
+      // subscribers
+      var subscribers = subscriptionService.findByTypeAndPostCode(alert.getType(), alert.getPostCode()).stream()
+          .map(Subscription::getUser);
 
-    // subscribers
-    var subscribers = subscriptionService.findByTypeAndPostCode(alert.getType(), alert.getPostCode()).stream()
-        .map(Subscription::getUser);
+      // alert owners
+      var existingAlertOwners = alertService.getOppositeAlertsInPostcode(alert).stream()
+          .map(Alert::getUser);
 
-    // alert owners
-    var existingAlertOwners = alertService.getOppositeAlertsInPostcode(alert).stream()
-        .map(Alert::getUser);
-
-    Stream.concat(subscribers, existingAlertOwners)
-        .distinct()
-        .forEach(user -> emailNotificationService.sendNewAlertEmail(alert, user));
+      Stream.concat(subscribers, existingAlertOwners)
+          .distinct()
+          .forEach(user -> emailNotificationService.sendNewAlertEmail(alert, user));
+    } else {
+      log.info("Alert {} has no postcode, skipping postcode-based notifications.", alert.getId());
+      // Optionally, you might want to notify the alert owner directly, 
+      // even if there's no postcode for broader notifications.
+      // For example:
+      // emailNotificationService.sendNewAlertEmail(alert, alert.getUser());
+    }
   }
 
   public void handleAlertChange(AlertEvent.Type reason, Alert alert) {

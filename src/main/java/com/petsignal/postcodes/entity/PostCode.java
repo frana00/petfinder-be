@@ -11,7 +11,7 @@ public class PostCode {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "postal_code", nullable = false)
+    @Column(name = "postal_code", nullable = true)
     private String postalCode;
 
     @Column(name = "country_code", nullable = false)

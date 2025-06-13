@@ -6,7 +6,6 @@ import com.petsignal.alert.entity.AlertType;
 import com.petsignal.alert.validator.ValidFileExtension;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -43,8 +42,6 @@ public class AlertRequest {
   @Size(max = 100, message = "Breed must be at most 100 characters")
   private String breed;
 
-  @NotBlank(message = "Postal code is required")
-  @Pattern(regexp = "^\\d{5}$", message = "Postal code must be 5 digits")
   private String postalCode;
 
   @NotNull(message = "Country code is required")

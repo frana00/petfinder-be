@@ -67,11 +67,20 @@ public class AlertService {
         .orElseThrow(() -> new ResourceNotFoundException(ALERT, "id", id));
   }
 
+  /**
+   * Creates a new alert.
+   *
+   * @param request the alert request
+   * @return the alert response
+   */
   @Transactional
   public AlertResponse createAlert(AlertRequest request) {
     User user = userService.findByUsername(request.getUsername());
 
-    PostCode postCode = postCodeService.findByPostCodeAndCountry(request.getPostalCode(), request.getCountryCode());
+    PostCode postCode = null;
+    if (request.getPostalCode() != null && !request.getPostalCode().isBlank()) {
+      postCode = postCodeService.findByPostCodeAndCountry(request.getPostalCode(), request.getCountryCode());
+    }
 
     Alert alert = buildAlertAndPhotosEntities(request, postCode, user);
 
@@ -82,15 +91,24 @@ public class AlertService {
     return alertBuilder.build(savedAlert, PUT);
   }
 
+  /**
+   * Updates an existing alert.
+   *
+   * @param id      the ID of the alert
+   * @param request the alert request
+   * @return the alert response
+   */
   @Transactional
   public AlertResponse updateAlert(Long id, AlertRequest request) {
     Alert alert = alertRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException(ALERT, "id", id));
 
     alertMapper.updateEntityFromRequest(request, alert);
-    // find postcode in database before saving
-    PostCode postCode = postCodeService
-        .findByPostCodeAndCountry(request.getPostalCode(), request.getCountryCode());
+    // find postcode in database before saving, only if present
+    PostCode postCode = null;
+    if (request.getPostalCode() != null && !request.getPostalCode().isBlank()) {
+      postCode = postCodeService.findByPostCodeAndCountry(request.getPostalCode(), request.getCountryCode());
+    }
     alert.setPostCode(postCode);
     Alert updatedAlert = alertRepository.save(alert);
 
@@ -100,6 +118,13 @@ public class AlertService {
     return alertBuilder.build(updatedAlert, GET);
   }
 
+  /**
+   * Determines the notification reason for an updated alert.
+   *
+   * @param request the alert request
+   * @param alert   the alert entity
+   * @return the notification reason
+   */
   private static AlertEvent.Type getNotificationReason(AlertRequest request, Alert alert) {
     if (AlertStatus.RESOLVED.equals(request.getStatus()) && AlertStatus.RESOLVED.equals(alert.getStatus())) {
       return AlertEvent.Type.RESOLVED;

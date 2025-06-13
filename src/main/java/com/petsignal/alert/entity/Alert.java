@@ -54,8 +54,8 @@ public class Alert {
   @Column(length = 100)
   private String breed;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "postal_code_id", nullable = false)
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "postal_code_id", nullable = true)
   private PostCode postCode;
 
   @OneToMany(mappedBy = "alert", cascade = CascadeType.ALL, orphanRemoval = true)

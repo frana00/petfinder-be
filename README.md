@@ -64,7 +64,7 @@ A Spring Boot application for managing pet alerts and notifications.
 
 Once the application is running, you can access the API documentation at:
 
-- Swagger UI: http://localhost:8080/api/v1/swagger-ui.html
+- Swagger UI: http://localhost:8080/swagger-ui/index.html
 
 ## Project Structure
 

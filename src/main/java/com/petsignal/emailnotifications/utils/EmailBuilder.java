@@ -82,7 +82,7 @@ public class EmailBuilder {
     return TEMPLATE_NEW
         .replace(USERNAME_PLACEHOLDER, user.getUsername())
         .replace(ALERT_INFO_PLACEHOLDER, fillInAlertInfo(alert))
-        .replace("%postcode%", alert.getPostCode().getPostalCode())
+        .replace("%postcode%", (alert.getPostCode() != null && alert.getPostCode().getPostalCode() != null) ? alert.getPostCode().getPostalCode() : "N/A")
         .replace("%alert_link%", getAlertLink(alert));
   }
 
