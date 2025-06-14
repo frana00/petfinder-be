@@ -4,6 +4,8 @@ import com.petsignal.alert.entity.Alert;
 import com.petsignal.posts.entity.Post;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,7 +45,12 @@ public class User {
   private List<Post> posts = new ArrayList<>();
 
   @Column(name = "created_at")
+  @CreationTimestamp
   private LocalDateTime createdAt;
+
+  @Column(name = "updated_at")
+  @UpdateTimestamp
+  private LocalDateTime updatedAt;
 
   public enum Role {
     ADMIN, USER

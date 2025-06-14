@@ -84,6 +84,85 @@ paths:
       responses:
         '204':
           description: User deleted
+    patch:
+      operationId: updateProfile
+      tags:
+        - User Profile
+      summary: Update user profile
+      description: Allows authenticated users to update their own profile information. Admins can update any user profile.
+      security:
+        - basicAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid input data or email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Validation Error"
+                  message:
+                    type: string
+                    example: "Email already exists"
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  message:
+                    type: string
+                    example: "Invalid credentials"
+        '403':
+          description: You can only update your own profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Forbidden"
+                  message:
+                    type: string
+                    example: "You can only update your own profile"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Not Found"
+                  message:
+                    type: string
+                    example: "User not found"
   /users/username/{username}:
     get:
       operationId: getUserByUsername
@@ -145,6 +224,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          readOnly: true
       required:
         - username
         - email
@@ -166,3 +249,25 @@ components:
         - username
         - email
         - password
+    UpdateProfileRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address (must be unique)
+          maxLength: 100
+          example: "user@example.com"
+        subscriptionEmail:
+          type: string
+          format: email
+          description: Email address for receiving notifications
+          maxLength: 100
+          example: "user@example.com"
+        phoneNumber:
+          type: string
+          description: User's phone number (can include country code)
+          maxLength: 20
+          pattern: '^[+]?[0-9\s\-()]{0,20}$'
+          example: "+1234567890"
+      description: Request body for updating user profile information. All fields are optional.

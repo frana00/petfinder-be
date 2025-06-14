@@ -1,13 +1,19 @@
 package com.petsignal.user.service;
 
+import com.petsignal.exception.BadRequestException;
+import com.petsignal.exception.ForbiddenException;
 import com.petsignal.exception.ResourceNotFoundException;
+import com.petsignal.security.CustomUserDetails;
 import com.petsignal.user.dto.CreateUserRequest;
+import com.petsignal.user.dto.UpdateProfileRequest;
 import com.petsignal.user.dto.UpdateUserRequest;
 import com.petsignal.user.dto.UserResponse;
 import com.petsignal.user.entity.User;
 import com.petsignal.user.mapper.UserMapper;
 import com.petsignal.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,5 +80,55 @@ public class UserService {
       throw new ResourceNotFoundException(USER, "id", id);
     }
     userRepository.deleteById(id);
+  }
+
+  @Transactional
+  public UserResponse updateProfile(Long userId, UpdateProfileRequest request) {
+    // Obtener el usuario autenticado
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails)) {
+      throw new ForbiddenException("User not authenticated");
+    }
+
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    User authenticatedUser = userDetails.getUser();
+
+    // Verificar que el usuario solo pueda actualizar su propio perfil
+    // Los administradores pueden actualizar cualquier perfil
+    if (!authenticatedUser.getId().equals(userId) && 
+        !authenticatedUser.getRole().equals(User.Role.ADMIN)) {
+      throw new ForbiddenException("You can only update your own profile");
+    }
+
+    // Buscar el usuario a actualizar
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new ResourceNotFoundException(USER, "id", userId));
+
+    // Validar email único si se está actualizando
+    if (request.getEmail() != null && !request.getEmail().trim().isEmpty()) {
+      userRepository.findByEmail(request.getEmail())
+          .filter(existingUser -> !existingUser.getId().equals(userId))
+          .ifPresent(existingUser -> {
+            throw new BadRequestException("Email already exists");
+          });
+      user.setEmail(request.getEmail());
+    }
+
+    // Actualizar subscription email si se proporciona
+    if (request.getSubscriptionEmail() != null && !request.getSubscriptionEmail().trim().isEmpty()) {
+      user.setSubscriptionEmail(request.getSubscriptionEmail());
+    }
+
+    // Actualizar phone number si se proporciona (puede ser null para eliminarlo)
+    if (request.getPhoneNumber() != null) {
+      if (request.getPhoneNumber().trim().isEmpty()) {
+        user.setPhoneNumber(null);
+      } else {
+        user.setPhoneNumber(request.getPhoneNumber());
+      }
+    }
+
+    // Guardar y retornar respuesta
+    return userMapper.toResponse(userRepository.save(user));
   }
 }

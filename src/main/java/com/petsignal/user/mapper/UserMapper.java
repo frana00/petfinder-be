@@ -15,7 +15,8 @@ public interface UserMapper {
   @Mapping(target = "alerts", ignore = true)
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "role", constant = "USER")
-  @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
+  @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "password", ignore = true)
   User toEntity(CreateUserRequest request);
 
@@ -26,6 +27,7 @@ public interface UserMapper {
   @Mapping(target = "alerts", ignore = true)
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "role", ignore = true)
-  @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
+  @Mapping(target = "createdAt", ignore = true)
+  @Mapping(target = "updatedAt", ignore = true)
   void updateEntityFromRequest(UpdateUserRequest request, @MappingTarget User user);
 } 

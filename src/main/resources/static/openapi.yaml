@@ -11,6 +11,8 @@ tags:
     description: Operations about alert photos
   - name: Users
     description: Operations about users
+  - name: User Profile
+    description: Operations for user profile management
   - name: Subscriptions
     description: Operations about subscriptions
   - name: Notifications
