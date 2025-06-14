@@ -36,6 +36,8 @@ paths:
 
   /alerts/{id}/posts:
     $ref: './openapi/post-openapi.yaml#/paths/~1alerts~1{id}~1posts'
+  /posts/{postId}:
+    $ref: './openapi/post-openapi.yaml#/paths/~1posts~1{postId}'
 
   /photos/s3:
     $ref: './openapi/s3-photo-openapi.yaml#/paths/~1photos~1s3'

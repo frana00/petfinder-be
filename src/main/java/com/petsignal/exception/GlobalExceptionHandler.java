@@ -118,6 +118,21 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse, BAD_REQUEST);
   }
 
+  @ExceptionHandler(ForbiddenException.class)
+  public ResponseEntity<ErrorResponse> handleForbiddenException(
+      ForbiddenException ex,
+      HttpServletRequest request) {
+
+    ErrorResponse errorResponse = new ErrorResponse(
+        FORBIDDEN.value(),
+        "Forbidden",
+        ex.getMessage(),
+        request.getRequestURI()
+    );
+
+    return new ResponseEntity<>(errorResponse, FORBIDDEN);
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleGlobalException(
       Exception ex,

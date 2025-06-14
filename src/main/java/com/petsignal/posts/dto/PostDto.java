@@ -20,7 +20,7 @@ public class PostDto {
   private String username;
 
   @NotBlank(message = "Content is required")
-  @Size(max = 300, message = "Content must be at most 300 characters")
+  @Size(max = 500, message = "Content must be at most 500 characters")
   private String content;
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)

@@ -83,8 +83,15 @@ src/main/java/com/petsignal/
 
 ## Features
 - CRUD operations for alerts, photos, users, and subscriptions
+- **Posts management**: Create, list, edit, and delete comments on alerts
 - Email notifications
 - OpenAPI documentation
+
+### Posts Endpoints
+- `GET /alerts/{id}/posts` - List all posts for an alert
+- `POST /alerts/{id}/posts` - Create a new post on an alert  
+- `PUT /posts/{postId}` - Edit an existing post (author only)
+- `DELETE /posts/{postId}` - Delete a post (author or alert owner)
 
 
 ## License

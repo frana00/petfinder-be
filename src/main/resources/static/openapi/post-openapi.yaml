@@ -46,6 +46,55 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PostResponse'
+  /posts/{postId}:
+    put:
+      operationId: updatePost
+      tags:
+        - Posts
+      summary: Update an existing post
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostRequest'
+      responses:
+        '200':
+          description: Post updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostResponse'
+        '400':
+          description: Bad request - invalid content
+        '403':
+          description: Forbidden - user is not the author of the post
+        '404':
+          description: Post not found
+    delete:
+      operationId: deletePost
+      tags:
+        - Posts
+      summary: Delete an existing post
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Post deleted successfully
+        '403':
+          description: Forbidden - user is not authorized to delete this post
+        '404':
+          description: Post not found
 components:
   schemas:
     PostRequest:
@@ -80,3 +129,13 @@ components:
           type: string
         createdAt:
           type: date
+    UpdatePostRequest:
+      type: object
+      example:
+        content: "Updated content for the post"
+      properties:
+        content:
+          type: string
+          maxLength: 500
+      required:
+        - content
