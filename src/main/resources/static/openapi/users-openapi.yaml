@@ -84,6 +84,27 @@ paths:
       responses:
         '204':
           description: User deleted
+  /users/username/{username}:
+    get:
+      operationId: getUserByUsername
+      tags:
+        - Users
+      summary: Get a user by username
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
 components:
   schemas:
     User:

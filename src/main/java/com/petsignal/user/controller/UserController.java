@@ -27,6 +27,11 @@ public class UserController {
     return userService.findById(id);
   }
 
+  @GetMapping("/username/{username}")
+  public UserResponse getUserByUsername(@PathVariable String username) {
+    return userService.findByUsernameResponse(username);
+  }
+
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public UserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
@@ -43,4 +48,4 @@ public class UserController {
   public void deleteUser(@PathVariable Long id) {
     userService.deleteUser(id);
   }
-} 
+}

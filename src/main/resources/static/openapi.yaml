@@ -46,6 +46,8 @@ paths:
     $ref: './openapi/users-openapi.yaml#/paths/~1users'
   /users/{id}:
     $ref: './openapi/users-openapi.yaml#/paths/~1users~1{id}'
+  /users/username/{username}:
+    $ref: './openapi/users-openapi.yaml#/paths/~1users~1username~1{username}'
 
   /subscriptions:
     $ref: './openapi/subscriptions-openapi.yaml#/paths/~1subscriptions'

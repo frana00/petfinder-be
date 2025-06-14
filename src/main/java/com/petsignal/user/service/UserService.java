@@ -46,6 +46,12 @@ public class UserService {
         .orElseThrow(() -> new ResourceNotFoundException(USER, "username", username));
   }
 
+  public UserResponse findByUsernameResponse(String username) {
+    return userRepository.findByUsername(username)
+        .map(userMapper::toResponse)
+        .orElseThrow(() -> new ResourceNotFoundException(USER, "username", username));
+  }
+
   @Transactional
   public UserResponse createUser(CreateUserRequest request) {
     User user = userMapper.toEntity(request);
@@ -69,4 +75,4 @@ public class UserService {
     }
     userRepository.deleteById(id);
   }
-} 
+}
