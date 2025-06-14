@@ -40,6 +40,10 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(POST, "/users").permitAll()
+            // ✅ Endpoints de recuperación de contraseña - PÚBLICOS
+            .requestMatchers("/auth/forgot-password").permitAll()
+            .requestMatchers("/auth/verify-reset-token/**").permitAll()
+            .requestMatchers("/auth/reset-password").permitAll()
             .requestMatchers(
                 "/swagger-ui/**",
                 "/swagger-ui.html",

@@ -50,6 +50,13 @@ paths:
   /subscriptions/{id}:
     $ref: './openapi/subscriptions-openapi.yaml#/paths/~1subscriptions~1{id}'
 
+  /auth/forgot-password:
+    $ref: './openapi/auth-openapi.yaml#/paths/~1auth~1forgot-password'
+  /auth/verify-reset-token/{token}:
+    $ref: './openapi/auth-openapi.yaml#/paths/~1auth~1verify-reset-token~1{token}'
+  /auth/reset-password:
+    $ref: './openapi/auth-openapi.yaml#/paths/~1auth~1reset-password'
+
 components:
   securitySchemes:
     basicAuth:

@@ -1,0 +1,99 @@
+paths:
+  /auth/forgot-password:
+    post:
+      operationId: requestPasswordReset
+      tags:
+        - Authentication
+      summary: Request password reset
+      security: []  # No auth required
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required:
+                - email
+      responses:
+        '200':
+          description: Reset email sent (always returns this for security)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Si el email está registrado, recibirás instrucciones para recuperar tu contraseña"
+        '429':
+          description: Too many requests
+          
+  /auth/verify-reset-token/{token}:
+    get:
+      operationId: verifyResetToken
+      tags:
+        - Authentication
+      summary: Verify if reset token is valid
+      security: []
+      parameters:
+        - name: token
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                    example: true
+                  email:
+                    type: string
+                    example: "user@example.com"
+        '400':
+          description: Invalid or expired token
+          
+  /auth/reset-password:
+    post:
+      operationId: resetPassword
+      tags:
+        - Authentication
+      summary: Reset password with token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+                  minLength: 8
+              required:
+                - token
+                - newPassword
+      responses:
+        '200':
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Contraseña actualizada exitosamente"
+        '400':
+          description: Invalid token or weak password

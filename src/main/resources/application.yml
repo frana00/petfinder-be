@@ -80,3 +80,14 @@ scheduling:
 notifications:
   email:
     from: ${FROM_EMAIL_ADDRESS}
+
+# Password Reset Configuration
+password-reset:
+  token-expiry-minutes: 15
+  # Configuración para deep links
+  frontend-scheme: ${FRONTEND_SCHEME:petsignal://}
+  frontend-path: ${FRONTEND_PATH:reset-password}
+  # Mantener para compatibilidad (deprecado)
+  frontend-base-url: ${FRONTEND_URL:http://localhost:19006}
+  max-attempts-per-hour: 3
+  cleanup-interval-minutes: 30
