@@ -1,98 +1,99 @@
 # PetSignal Backend
 
-A Spring Boot application for managing pet alerts and notifications.
+API REST para gestión de alertas de mascotas perdidas y encontradas.
 
-## Technologies
+> **Créditos**: Proyecto iniciado por [Jana (Hannah-bannanah)](https://github.com/Hannah-bannanah). 
+> Repositorio original: [petsignal-be](https://github.com/Hannah-bannanah/petsignal-be)
+
+## Tecnologías
+
 - Java 21
-- Spring Boot 3.2.3
-- Spring Data JPA
-- MySQL
-- Maven
+- Spring Boot 3.4.5
+- Spring Security + JWT
+- MySQL 8.0
+- AWS S3
 - Docker
-- OpenAPI/Swagger
+- OpenAPI 3.0
 
-## Prerequisites
+## Requisitos
 
-- Java 21 or higher
-- Maven 3.6 or higher
-- MySQL 8.0 or higher
-- Docker 20.10 or higher
+- Java 21+
+- Maven 3.6+
+- MySQL 8.0+
+- Docker 20.10+
 
-## Setup
+## Configuración
 
-1. Clone the repository:
-   ```
+1. Clonar el repositorio:
+   ```bash
    git clone https://github.com/yourusername/petsignal-be.git
-   cd petsignal-be
+   cd petfinder-be
    ```
 
-2. Start the MySQL Docker container
-   - Update `docker-compose.yml` with your credentials
-   - First time only: build the docker container
-   ```
+2. Iniciar el contenedor MySQL de Docker
+   - Actualizar `docker-compose.yml` con tus credenciales
+   - Solo la primera vez: construir el contenedor
+   ```bash
    cd database;
    docker compose up --build -d;
    cd ..
    ```
-   - Following times you can start the docker container normally
-   ```
+   - Para siguientes ejecuciones puedes iniciar el contenedor normalmente
+   ```bash
    cd database;
    docker compose up -d;
    cd ..
    ```
-   - After shutting down the application, you can stop the container
-   ```
+   - Después de cerrar la aplicación, puedes detener el contenedor
+   ```bash
    cd database;
    docker compose down;
    cd ..
    ```
-3. Configure the application:
-    - Update `application.yml` with your database credentials
-    - Update `application.yml` with your AWS credentials and configuration
 
-4. Build the application:
-   ```
+3. Configurar la aplicación:
+   - Crear archivo `.env` en la raíz del proyecto con tus credenciales
+   - La aplicación cargará automáticamente las variables de entorno
+
+4. Compilar la aplicación:
+   ```bash
    mvn clean install
    ```
 
-5. Run the application:
-   ```
+5. Ejecutar la aplicación:
+   ```bash
    mvn spring-boot:run
    ```
 
-## API Documentation
+Aplicación disponible en: `http://localhost:8080`
 
-Once the application is running, you can access the API documentation at:
+## Documentación API
 
-- Swagger UI: http://localhost:8080/swagger-ui/index.html
+- **Swagger UI**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI**: `http://localhost:8080/openapi.yaml`
 
-## Project Structure
+## Funcionalidades
+
+- **Alertas**: CRUD de mascotas perdidas/encontradas
+- **Posts**: Comentarios comunitarios en alertas
+- **Usuarios**: Registro, autenticación, perfiles
+- **Fotos**: Subida y gestión vía S3
+- **Notificaciones**: Emails automáticos
+- **Seguridad**: JWT + HTTP Basic Auth
+
+## Estructura del Proyecto
 
 ```
 src/main/java/com/petsignal/
-├── alert/            # Alert operations
-├── config/           # Configuration classes
-├── exception/        # Custom exception classes and handlers
-├── photos/           # Photo operations
-├── postcodes/        # Postcode operations
-├── s3bucket/         # Interaction with AWS s3 bucket
-├── scheduler/        # Scheduled jobs
-├── user/             # User operations
-└── PetSignalApplication.java
+├── alert/          # Gestión de alertas
+├── auth/           # Autenticación
+├── posts/          # Comentarios
+├── user/           # Usuarios
+├── photos/         # Gestión de fotos
+├── notifications/  # Notificaciones
+└── ...
 ```
 
-## Features
-- CRUD operations for alerts, photos, users, and subscriptions
-- **Posts management**: Create, list, edit, and delete comments on alerts
-- Email notifications
-- OpenAPI documentation
+## Licencia
 
-### Posts Endpoints
-- `GET /alerts/{id}/posts` - List all posts for an alert
-- `POST /alerts/{id}/posts` - Create a new post on an alert  
-- `PUT /posts/{postId}` - Edit an existing post (author only)
-- `DELETE /posts/{postId}` - Delete a post (author or alert owner)
-
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - Ver archivo [LICENSE](LICENSE)
