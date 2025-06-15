@@ -173,4 +173,31 @@ public class AlertService {
 
     return alertRepository.findByTypeAndPostCodeAndDeletedFalse(type, alert.getPostCode());
   }
+
+  /**
+   * Find alerts within a specific radius from given coordinates
+   *
+   * @param latitude   the latitude of the center point
+   * @param longitude  the longitude of the center point
+   * @param radius     the search radius in kilometers
+   * @param type       optional alert type filter
+   * @return list of alerts within the radius
+   */
+  @Transactional(readOnly = true)
+  public List<AlertResponse> findAlertsWithinRadius(Double latitude, Double longitude, Double radius, AlertType type) {
+    if (latitude == null || longitude == null) {
+      throw new IllegalArgumentException("Latitude and longitude are required for proximity search");
+    }
+    
+    if (radius == null || radius <= 0) {
+      throw new IllegalArgumentException("Radius must be a positive number");
+    }
+
+    String typeString = type != null ? type.name() : null;
+    List<Alert> alerts = alertRepository.findAlertsWithinRadius(latitude, longitude, radius, typeString);
+    
+    return alerts.stream()
+        .map(alert -> alertBuilder.build(alert, GET))
+        .toList();
+  }
 }

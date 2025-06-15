@@ -54,4 +54,33 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
                                                         @Param("to") LocalDateTime to);
 
   List<Alert> findByTypeAndPostCodeAndDeletedFalse(AlertType type, PostCode postCode);
+
+  // Query for finding alerts within a radius using Haversine formula
+  @Query(value = """
+      SELECT *, 
+      (6371 * acos(
+          cos(radians(:lat)) * cos(radians(latitude)) * 
+          cos(radians(longitude) - radians(:lng)) + 
+          sin(radians(:lat)) * sin(radians(latitude))
+      )) AS distance_km
+      FROM alerts 
+      WHERE latitude IS NOT NULL 
+        AND longitude IS NOT NULL
+        AND (6371 * acos(
+            cos(radians(:lat)) * cos(radians(latitude)) * 
+            cos(radians(longitude) - radians(:lng)) + 
+            sin(radians(:lat)) * sin(radians(latitude))
+        )) <= :radius
+        AND (:type IS NULL OR type = :type)
+        AND status = 'ACTIVE'
+        AND deleted = false
+      ORDER BY distance_km
+      LIMIT 50
+      """, nativeQuery = true)
+  List<Alert> findAlertsWithinRadius(
+      @Param("lat") Double lat, 
+      @Param("lng") Double lng, 
+      @Param("radius") Double radius,
+      @Param("type") String type
+  );
 }

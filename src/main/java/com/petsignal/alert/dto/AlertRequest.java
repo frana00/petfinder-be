@@ -4,6 +4,7 @@ import com.petsignal.alert.entity.AlertSex;
 import com.petsignal.alert.entity.AlertStatus;
 import com.petsignal.alert.entity.AlertType;
 import com.petsignal.alert.validator.ValidFileExtension;
+import com.petsignal.alert.validator.ValidGpsCoordinates;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@ValidGpsCoordinates
 public class AlertRequest {
 
   @NotBlank(message = "Username is required")
@@ -46,6 +48,14 @@ public class AlertRequest {
 
   @NotNull(message = "Country code is required")
   private String countryCode;
+
+  private String location;
+
+  private Double latitude;
+
+  private Double longitude;
+
+  private String locationSource;
 
   @Size(max = 5, message = "You can upload a maximum of 5 photos")
   @ValidFileExtension

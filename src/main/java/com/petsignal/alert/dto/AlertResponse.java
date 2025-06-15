@@ -36,6 +36,14 @@ public class AlertResponse {
 
   private String countryCode;
 
+  private String location;
+
+  private Double latitude;
+
+  private Double longitude;
+
+  private String locationSource;
+
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;

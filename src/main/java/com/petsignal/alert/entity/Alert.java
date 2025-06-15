@@ -58,6 +58,18 @@ public class Alert {
   @JoinColumn(name = "postal_code_id", nullable = true)
   private PostCode postCode;
 
+  @Column(length = 255)
+  private String location;
+
+  @Column(name = "latitude")
+  private Double latitude;
+
+  @Column(name = "longitude")
+  private Double longitude;
+
+  @Column(name = "location_source", length = 10)
+  private String locationSource;
+
   @OneToMany(mappedBy = "alert", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Photo> photos = new ArrayList<>();
 

@@ -76,4 +76,15 @@ public class AlertController {
     alertPhotoService.deletePhotoFromAlert(alertId, s3ObjectKey);
     return ResponseEntity.noContent().build();
   }
+
+  @GetMapping("/nearby")
+  public ResponseEntity<List<AlertResponse>> getAlertsNearby(
+      @RequestParam Double lat,
+      @RequestParam Double lng,
+      @RequestParam(defaultValue = "10.0") Double radius,
+      @RequestParam(required = false) AlertType type
+  ) {
+    List<AlertResponse> nearbyAlerts = alertService.findAlertsWithinRadius(lat, lng, radius, type);
+    return ResponseEntity.ok(nearbyAlerts);
+  }
 } 
