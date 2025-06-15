@@ -44,9 +44,10 @@ public class AlertRequest {
   @Size(max = 100, message = "Breed must be at most 100 characters")
   private String breed;
 
+  @Size(max = 20, message = "Postal code cannot exceed 20 characters")
   private String postalCode;
 
-  @NotNull(message = "Country code is required")
+  @Size(max = 3, message = "Country code cannot exceed 3 characters")
   private String countryCode;
 
   private String location;

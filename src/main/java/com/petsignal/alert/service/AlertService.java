@@ -6,6 +6,7 @@ import com.petsignal.alert.entity.Alert;
 import com.petsignal.alert.entity.AlertStatus;
 import com.petsignal.alert.entity.AlertType;
 import com.petsignal.alert.events.AlertEvent;
+import com.petsignal.alert.exception.ValidationException;
 import com.petsignal.alert.mapper.AlertMapper;
 import com.petsignal.alert.mapper.AlertResponseBuilder;
 import com.petsignal.alert.repository.AlertRepository;
@@ -75,6 +76,9 @@ public class AlertService {
    */
   @Transactional
   public AlertResponse createAlert(AlertRequest request) {
+    // Validación condicional: GPS O postal code
+    validateLocationData(request);
+    
     User user = userService.findByUsername(request.getUsername());
 
     PostCode postCode = null;
@@ -199,5 +203,29 @@ public class AlertService {
     return alerts.stream()
         .map(alert -> alertBuilder.build(alert, GET))
         .toList();
+  }
+
+  private void validateLocationData(AlertRequest request) {
+    boolean hasValidGPS = request.getLatitude() != null && request.getLongitude() != null;
+    boolean hasPostalData = request.getPostalCode() != null && !request.getPostalCode().trim().isEmpty() 
+                           && request.getCountryCode() != null && !request.getCountryCode().trim().isEmpty();
+
+    if (!hasValidGPS && !hasPostalData) {
+      throw new ValidationException("Either GPS coordinates (latitude and longitude) or postal code with country code must be provided");
+    }
+
+    // Si hay GPS, validar rango válido
+    if (hasValidGPS) {
+      validateGPSCoordinates(request.getLatitude(), request.getLongitude());
+    }
+  }
+
+  private void validateGPSCoordinates(Double latitude, Double longitude) {
+    if (latitude < -90 || latitude > 90) {
+      throw new ValidationException("Latitude must be between -90 and 90 degrees");
+    }
+    if (longitude < -180 || longitude > 180) {
+      throw new ValidationException("Longitude must be between -180 and 180 degrees");
+    }
   }
 }

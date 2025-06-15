@@ -5,6 +5,7 @@ import com.petsignal.alert.dto.AlertRequest;
 import com.petsignal.alert.dto.AlertResponse;
 import com.petsignal.alert.entity.AlertStatus;
 import com.petsignal.alert.entity.AlertType;
+import com.petsignal.alert.exception.ValidationException;
 import com.petsignal.alert.service.AlertPhotoService;
 import com.petsignal.alert.service.AlertService;
 import com.petsignal.photos.dto.PhotoUrl;
@@ -18,7 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/alerts")
@@ -86,5 +89,12 @@ public class AlertController {
   ) {
     List<AlertResponse> nearbyAlerts = alertService.findAlertsWithinRadius(lat, lng, radius, type);
     return ResponseEntity.ok(nearbyAlerts);
+  }
+
+  @ExceptionHandler(ValidationException.class)
+  public ResponseEntity<Map<String, String>> handleValidationException(ValidationException ex) {
+    Map<String, String> error = new HashMap<>();
+    error.put("error", ex.getMessage());
+    return ResponseEntity.badRequest().body(error);
   }
 } 
