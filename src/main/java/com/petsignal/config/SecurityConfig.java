@@ -40,6 +40,8 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(POST, "/users").permitAll()
+            // ✅ Authentication endpoints - PÚBLICOS
+            .requestMatchers("/auth/login").permitAll()
             // ✅ Endpoints de recuperación de contraseña - PÚBLICOS
             .requestMatchers("/auth/forgot-password").permitAll()
             .requestMatchers("/auth/verify-reset-token/**").permitAll()

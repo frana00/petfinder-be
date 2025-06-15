@@ -27,10 +27,11 @@ public interface AlertRepository extends JpaRepository<Alert, Long> {
 
   @Query("""
         SELECT a FROM Alert a
+        LEFT JOIN a.postCode pc
         WHERE (:type IS NULL OR a.type = :type)
           AND (:status IS NULL OR a.status = :status)
-          AND (:countryCode IS NULL OR a.postCode.countryCode = :countryCode)
-          AND (:postalCode IS NULL OR a.postCode.postalCode = :postalCode)
+          AND (:countryCode IS NULL OR pc.countryCode = :countryCode)
+          AND (:postalCode IS NULL OR pc.postalCode = :postalCode)
           AND (a.deleted = false)
       """)
   Page<Alert> findFilteredAlerts(

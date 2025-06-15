@@ -2,9 +2,13 @@ package com.petsignal.auth.service;
 
 import com.petsignal.auth.dto.LoginRequest;
 import com.petsignal.auth.dto.LoginResponse;
+import com.petsignal.user.entity.User;
 import com.petsignal.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,23 +16,34 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class AuthService {
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
     
     public LoginResponse login(LoginRequest request) {
-        // Verificar si el usuario existe (uso simple de userService para evitar warning de lint)
         try {
-            // Intentamos obtener la lista de usuarios para verificar que el servicio está funcionando
-            var users = userService.getAllUsers();
-            log.info("Usuarios registrados en el sistema: {}", users.size());
+            // Authenticate the user using Spring Security
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+            );
+            
+            // If authentication is successful, get user details
+            User user = userService.findByUsername(request.getUsername());
+            
+            log.info("User {} logged in successfully", request.getUsername());
+            
+            // In a real implementation, you would generate a JWT token here
+            // For now, return a simulated token
+            return LoginResponse.builder()
+                    .token("simulated-jwt-token-for-" + user.getUsername())
+                    .username(user.getUsername())
+                    .role(user.getRole().name())
+                    .build();
+                    
+        } catch (BadCredentialsException e) {
+            log.warn("Failed login attempt for username: {}", request.getUsername());
+            throw new BadCredentialsException("Invalid username or password");
         } catch (Exception e) {
-            log.warn("No se pudo verificar los usuarios: {}", e.getMessage());
+            log.error("Login error for username: {}", request.getUsername(), e);
+            throw new BadCredentialsException("Authentication failed");
         }
-        
-        // En una implementación real, aquí verificaríamos las credenciales del usuario
-        // y generaríamos un token JWT. Para simplificar, devolvemos una respuesta simulada.
-        return LoginResponse.builder()
-                .token("simulated-jwt-token")
-                .username(request.getUsername())
-                .role("USER")
-                .build();
     }
 }
